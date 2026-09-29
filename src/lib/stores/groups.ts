@@ -1,4 +1,4 @@
-﻿import { writable } from 'svelte/store';
+import { writable } from 'svelte/store';
 import type { Group } from '../utils/storage';
 import { loadGroups, saveGroup, deleteGroup } from '../utils/storage';
 
@@ -10,6 +10,11 @@ export async function refreshGroups() {
 }
 
 export async function addGroup(group: Group) {
+  await saveGroup(group);
+  await refreshGroups();
+}
+
+export async function updateGroup(group: Group) {
   await saveGroup(group);
   await refreshGroups();
 }
