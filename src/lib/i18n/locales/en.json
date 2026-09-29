@@ -1,0 +1,32 @@
+﻿{
+  "app": { "title": "Lesson Diary" },
+  "nav": { "groups": "Groups", "lessons": "Lessons", "import": "Import" },
+  "groups": {
+    "title": "Groups", "add": "Add group", "name": "Group name",
+    "students": "Students", "student_name": "Student name",
+    "add_student": "Add student", "remove_student": "Remove student",
+    "save": "Save", "delete": "Delete group",
+    "confirm_delete": "Delete group? All lessons will be lost.",
+    "empty": "No groups yet"
+  },
+  "lessons": {
+    "title": "Lessons", "add": "New lesson", "date": "Date", "hours": "Hours",
+    "topic": "Topic", "materials": "Materials", "students": "Students",
+    "present": "Present", "absent": "Absent", "reason": "Reason",
+    "save": "Save", "delete": "Delete lesson",
+    "confirm_delete": "Delete lesson?", "empty": "No lessons yet",
+    "back": "Back", "copy_all": "Copy all",
+    "copy_students": "Copy students", "copy_topic": "Copy topic",
+    "copy_materials": "Copy materials", "copied": "Copied"
+  },
+  "import": {
+    "title": "Import entries", "select_folder": "Select folder",
+    "import": "Import", "success": "Imported files: {count}",
+    "error": "Import error"
+  },
+  "common": {
+    "save": "Save", "cancel": "Cancel", "delete": "Delete",
+    "edit": "Edit", "close": "Close", "loading": "Loading...",
+    "yes": "Yes", "no": "No", "confirm": "Confirm"
+  }
+}
