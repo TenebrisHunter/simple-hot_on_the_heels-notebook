@@ -13,7 +13,11 @@ pub struct Student {
 pub struct Group {
     pub name: String,
     pub students: Vec<String>,
+    #[serde(default = "default_hours_value")]
+    pub default_hours: f64,
 }
+
+fn default_hours_value() -> f64 { 1.0 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Lesson {
@@ -55,11 +59,19 @@ pub fn load_groups() -> Result<Vec<Group>, String> {
         if path.is_dir() {
             let name = path.file_name().unwrap().to_string_lossy().to_string();
             let group_file = path.join("group.txt");
-            let students = if group_file.exists() {
-                fs::read_to_string(&group_file).map_err(|e| e.to_string())?
-                    .lines().filter(|l| !l.trim().is_empty()).map(|l| l.to_string()).collect()
-            } else { vec![] };
-            groups.push(Group { name, students });
+            let mut students = vec![];
+            let mut default_hours = 1.0;
+            if group_file.exists() {
+                let content = fs::read_to_string(&group_file).map_err(|e| e.to_string())?;
+                for line in content.lines() {
+                    if let Some(v) = line.strip_prefix("Часы: ") {
+                        default_hours = v.trim().parse().unwrap_or(1.0);
+                    } else if !line.trim().is_empty() {
+                        students.push(line.to_string());
+                    }
+                }
+            }
+            groups.push(Group { name, students, default_hours });
         }
     }
     Ok(groups)
@@ -68,11 +80,15 @@ pub fn load_groups() -> Result<Vec<Group>, String> {
 pub fn save_group(group: &Group) -> Result<(), String> {
     let dir = data_dir().join(&group.name);
     fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
-    fs::write(dir.join("group.txt"), group.students.join("\n")).map_err(|e| e.to_string())?;
+    let mut content = String::new();
+    content.push_str(&format!("Часы: {}\n", group.default_hours));
+    for s in &group.students {
+        content.push_str(&format!("{}\n", s));
+    }
+    fs::write(dir.join("group.txt"), content).map_err(|e| e.to_string())?;
     Ok(())
 }
 
-/// Удаляет группу в корзину
 pub fn delete_group(name: &str) -> Result<(), String> {
     let src = data_dir().join(name);
     if !src.exists() { return Err("Группа не найдена".to_string()); }
@@ -104,7 +120,6 @@ pub fn load_lessons(group_name: &str) -> Result<Vec<Lesson>, String> {
     Ok(lessons)
 }
 
-/// Проверяет, есть ли уже занятие в этот день у группы
 pub fn lesson_exists(group_name: &str, date: &str) -> Result<bool, String> {
     let dir = data_dir().join(group_name);
     if !dir.exists() { return Ok(false); }
@@ -138,7 +153,6 @@ pub fn save_lesson(group_name: &str, lesson: &Lesson, overwrite: bool) -> Result
     Ok(filename.trim_end_matches(".txt").to_string())
 }
 
-/// Удаляет занятие в корзину
 pub fn delete_lesson(group_name: &str, file_id: &str) -> Result<(), String> {
     let src = data_dir().join(group_name).join(format!("{}.txt", file_id));
     if !src.exists() { return Err("Файл не найден".to_string()); }
@@ -149,7 +163,6 @@ pub fn delete_lesson(group_name: &str, file_id: &str) -> Result<(), String> {
     Ok(())
 }
 
-/// Удаляет несколько занятий в корзину
 pub fn delete_lessons(group_name: &str, file_ids: Vec<String>) -> Result<usize, String> {
     let mut count = 0;
     for id in file_ids {
@@ -158,7 +171,6 @@ pub fn delete_lessons(group_name: &str, file_ids: Vec<String>) -> Result<usize, 
     Ok(count)
 }
 
-/// Список занятий в корзине
 pub fn list_trash_lessons(group_name: &str) -> Result<Vec<String>, String> {
     let dir = trash_dir().join("lessons").join(group_name);
     if !dir.exists() { return Ok(vec![]); }
@@ -171,7 +183,6 @@ pub fn list_trash_lessons(group_name: &str) -> Result<Vec<String>, String> {
     Ok(files)
 }
 
-/// Список групп в корзине
 pub fn list_trash_groups() -> Result<Vec<String>, String> {
     let dir = trash_dir().join("groups");
     if !dir.exists() { return Ok(vec![]); }
@@ -260,6 +271,13 @@ pub fn import_from_folder(folder_path: &str, group_name: &str) -> Result<usize, 
     Ok(count)
 }
 
+pub fn toggle_mark(group_name: &str, lesson: &Lesson) -> Result<(), String> {
+    let mut updated = lesson.clone();
+    updated.marked = !updated.marked;
+    save_lesson(group_name, &updated, true)?;
+    Ok(())
+}
+
 fn timestamp() -> u64 {
     std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_secs()
 }
@@ -307,11 +325,4 @@ fn format_lesson(lesson: &Lesson) -> String {
         out.push('\n');
     }
     out
-}
-/// Переключает отметку «в журнале» у занятия
-pub fn toggle_mark(group_name: &str, lesson: &Lesson) -> Result<(), String> {
-    let mut updated = lesson.clone();
-    updated.marked = !updated.marked;
-    save_lesson(group_name, &updated, true)?;
-    Ok(())
 }

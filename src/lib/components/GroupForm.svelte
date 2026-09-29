@@ -8,6 +8,7 @@
   export let editGroup: Group | null = null;
 
   let name = editGroup?.name || '';
+  let defaultHours = editGroup?.default_hours ?? 1;
   let students: string[] = editGroup?.students?.length ? [...editGroup.students] : [''];
   let saving = false;
 
@@ -17,7 +18,11 @@
   async function save() {
     if (!name.trim()) return;
     saving = true;
-    const group: Group = { name: name.trim(), students: students.filter(s => s.trim()) };
+    const group: Group = {
+      name: name.trim(),
+      students: students.filter(s => s.trim()),
+      default_hours: defaultHours
+    };
     try {
       await withMinLoading(async () => {
         if (editGroup) await updateGroup(group);
@@ -37,6 +42,11 @@
     <label>
       {$t('groups.name')}
       <input bind:value={name} placeholder="Группа А" />
+    </label>
+
+    <label>
+      Часы по умолчанию
+      <input type="number" step="0.5" bind:value={defaultHours} min="0" />
     </label>
 
     <label>{$t('groups.students')}</label>

@@ -13,7 +13,6 @@
   const now = new Date();
   let date = now.toISOString().slice(0, 10);
   let time = now.toTimeString().slice(0, 8);
-  let hours = 1;
   let topic = '';
   let materials = '';
   let marked = false;
@@ -21,9 +20,11 @@
 
   $: group = $groups.find(g => g.name === groupName);
   let editableStudents: Student[] = [];
+  let hours = 1;
 
   $: if (group && editableStudents.length === 0) {
     editableStudents = group.students.map((name): Student => ({ name, present: true, reason: '' }));
+    hours = group.default_hours ?? 1;
   }
 
   async function doSave(overwrite: boolean) {

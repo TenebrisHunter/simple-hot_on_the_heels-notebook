@@ -1,7 +1,7 @@
 import { invoke } from '@tauri-apps/api/core';
 
 export interface Student { name: string; present: boolean; reason?: string; }
-export interface Group { name: string; students: string[]; }
+export interface Group { name: string; students: string[]; default_hours: number; }
 export interface Lesson {
   date: string;
   time: string;
