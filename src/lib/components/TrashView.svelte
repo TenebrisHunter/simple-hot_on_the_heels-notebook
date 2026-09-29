@@ -1,7 +1,7 @@
 <script lang="ts">
   import { t } from '../i18n';
   import { groups, refreshGroups } from '../stores/groups';
-  import { confirmMessage, confirmCallback } from '../stores/ui';
+  import { confirmMessage, confirmCallback, withMinLoading } from '../stores/ui';
   import {
     listTrashLessons, listTrashGroups,
     restoreTrashLesson, restoreTrashGroup,
@@ -19,15 +19,6 @@
   $: if (trashGroup && tab === 'lessons') loadLessons();
   $: if (tab === 'groups') loadGroups();
 
-  function minDelay<T>(fn: () => Promise<T>, ms: number = 400): Promise<T> {
-    const start = Date.now();
-    return fn().then(async (r) => {
-      const elapsed = Date.now() - start;
-      if (elapsed < ms) await new Promise(res => setTimeout(res, ms - elapsed));
-      return r;
-    });
-  }
-
   async function loadLessons() {
     loading = true;
     lessonsFiles = await listTrashLessons(trashGroup);
@@ -43,7 +34,7 @@
   async function restoreL(fileId: string) {
     busyId = fileId;
     try {
-      await minDelay(async () => {
+      await withMinLoading(async () => {
         await restoreTrashLesson(trashGroup, fileId);
         await loadLessons();
       });
@@ -55,7 +46,7 @@
   async function restoreG(trashName: string) {
     busyId = trashName;
     try {
-      await minDelay(async () => {
+      await withMinLoading(async () => {
         await restoreTrashGroup(trashName);
         await loadGroups();
         await refreshGroups();
@@ -72,7 +63,7 @@
       $confirmCallback = null;
       busyId = fileId;
       try {
-        await minDelay(async () => {
+        await withMinLoading(async () => {
           await deleteTrashLesson(trashGroup, fileId);
           await loadLessons();
         });
@@ -89,7 +80,7 @@
       $confirmCallback = null;
       busyId = trashName;
       try {
-        await minDelay(async () => {
+        await withMinLoading(async () => {
           await deleteTrashGroup(trashName);
           await loadGroups();
         });

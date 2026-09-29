@@ -2,7 +2,7 @@
   import { t } from '../i18n';
   import { lessons, refreshLessons, removeLesson, removeLessons, toggleMark } from '../stores/lessons';
   import { groups } from '../stores/groups';
-  import { lessonsGroup, view, selectedLesson, confirmMessage, confirmCallback, selectedLessons } from '../stores/ui';
+  import { lessonsGroup, view, selectedLesson, confirmMessage, confirmCallback, selectedLessons, withMinLoading } from '../stores/ui';
   import LessonForm from './LessonForm.svelte';
   import LoadingSpinner from './LoadingSpinner.svelte';
 
@@ -24,22 +24,12 @@
   function selectAll() { $selectedLessons = new Set($lessons.map(l => l.file_id || '')); }
   function clearAll() { $selectedLessons = new Set(); }
 
-  /// Минимальная задержка, чтобы спиннер был виден
-  function minDelay<T>(fn: () => Promise<T>, ms: number = 400): Promise<T> {
-    const start = Date.now();
-    return fn().then(async (r) => {
-      const elapsed = Date.now() - start;
-      if (elapsed < ms) await new Promise(res => setTimeout(res, ms - elapsed));
-      return r;
-    });
-  }
-
   async function onToggleMark(lesson: any, event: MouseEvent) {
     event.stopPropagation();
     if (!$lessonsGroup) return;
     togglingId = lesson.file_id;
     try {
-      await minDelay(async () => {
+      await withMinLoading(async () => {
         await toggleMark($lessonsGroup, lesson);
       });
     } finally {
@@ -56,7 +46,7 @@
       if (!$lessonsGroup || !lesson.file_id) return;
       deletingId = lesson.file_id;
       try {
-        await minDelay(async () => {
+        await withMinLoading(async () => {
           await removeLesson($lessonsGroup, lesson.file_id);
         });
       } finally {
@@ -75,7 +65,7 @@
       if (!$lessonsGroup) return;
       deletingBulk = true;
       try {
-        await minDelay(async () => {
+        await withMinLoading(async () => {
           await removeLessons($lessonsGroup, Array.from($selectedLessons));
           $selectedLessons = new Set();
         });
