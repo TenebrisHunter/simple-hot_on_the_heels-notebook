@@ -1,0 +1,8 @@
+Дневник занятий для тренера — быстрая фиксация посещаемости,
+часов, тем и материалов с последующим переносом в Яндекс.Таблицы.
+
+A lesson diary for coaches — quick recording of attendance,
+hours, topics and materials, with easy transfer to Yandex Sheets.
+
+Автор / Author: Ключенко М.А. (ОмГТУ, БИТ-211)
+Лицензия / License: MIT

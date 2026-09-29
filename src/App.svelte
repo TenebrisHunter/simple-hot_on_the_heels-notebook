@@ -27,6 +27,10 @@
     {:else if $view === 'trash'}<TrashView />
     {/if}
   </section>
+
+  <footer>
+    Дневник занятий · Омск, ОмГТУ, БИТ-211 · Ключенко М.А. · 2026
+  </footer>
 </main>
 
 {#if $confirmMessage && $confirmCallback}
@@ -37,10 +41,19 @@
 
 <style>
   :global(body) { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: #fafafa; }
-  main { max-width: 900px; margin: 0 auto; padding: 16px; }
+  main { max-width: 900px; margin: 0 auto; padding: 16px; display: flex; flex-direction: column; min-height: 100vh; box-sizing: border-box; }
   header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
   h1 { font-size: 1.2rem; margin: 0; }
   nav { display: flex; gap: 8px; flex-wrap: wrap; }
   nav button { background: none; border: none; padding: 6px 12px; cursor: pointer; border-radius: 4px; font-size: 0.9rem; }
   nav button.active { background: #4a90d9; color: white; }
+  section { flex: 1; }
+  footer {
+    margin-top: 24px;
+    padding-top: 12px;
+    border-top: 1px solid #eee;
+    text-align: center;
+    color: #999;
+    font-size: 0.8rem;
+  }
 </style>

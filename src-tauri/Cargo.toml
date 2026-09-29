@@ -1,4 +1,7 @@
 [package]
+authors = ["Ключенко М.А. <misha.klyuchenko@gmail.com>"]
+description = "Дневник занятий для тренера"
+license = "MIT"
 name = "simple-hot-on-the-heels-notebook"
 version = "0.1.0"
 description = "A Tauri App"
@@ -8,6 +11,9 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
+authors = ["Ключенко М.А. <misha.klyuchenko@gmail.com>"]
+description = "Дневник занятий для тренера"
+license = "MIT"
 name = "simple_hot_on_the_heels_notebook_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
