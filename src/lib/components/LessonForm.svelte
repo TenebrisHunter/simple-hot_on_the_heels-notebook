@@ -15,13 +15,12 @@
   let saving = false;
 
   $: group = $groups.find(g => g.name === groupName);
-  $: students = (group?.students || []).map((name): Student => ({
-    name, present: true, reason: ''
-  }));
-
   let editableStudents: Student[] = [];
-  $: if (students.length && editableStudents.length === 0) {
-    editableStudents = students;
+
+  $: if (group && editableStudents.length === 0) {
+    editableStudents = group.students.map((name): Student => ({
+      name, present: true, reason: ''
+    }));
   }
 
   async function save() {
@@ -36,6 +35,10 @@
 <div class="overlay">
   <div class="dialog">
     <h2>{$t('lessons.add')} — {groupName}</h2>
+
+    <!-- УЧЕНИКИ — ВЫШЕ ЧАСОВ -->
+    <label>{$t('lessons.students')}</label>
+    <StudentChecklist bind:students={editableStudents} />
 
     <label>{$t('lessons.date')}
       <input type="date" bind:value={date} />
@@ -53,13 +56,14 @@
       <textarea bind:value={materials} rows="2"></textarea>
     </label>
 
-    <label>{$t('lessons.students')}</label>
-    <StudentChecklist bind:students={editableStudents} />
-
     <div class="buttons">
       <button class="cancel" on:click={onClose}>{$t('common.cancel')}</button>
       <button class="save" on:click={save} disabled={saving}>
-        {saving ? $t('common.loading') : $t('common.save')}
+        {#if saving}
+          <span class="loader"></span>
+        {:else}
+          {$t('common.save')}
+        {/if}
       </button>
     </div>
   </div>
@@ -83,5 +87,19 @@
   }
   .buttons { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
   button.cancel { background: #eee; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
-  button.save { background: #4a90d9; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
+  button.save {
+    background: #4a90d9; color: white; border: none; padding: 8px 16px;
+    border-radius: 4px; cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    min-width: 120px; justify-content: center;
+  }
+  button.save:disabled { opacity: 0.6; cursor: not-allowed; }
+  .loader {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
 </style>
