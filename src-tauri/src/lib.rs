@@ -5,6 +5,7 @@ mod commands;
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_dialog::init())
         .invoke_handler(tauri::generate_handler![
             commands::load_groups,
             commands::save_group,
