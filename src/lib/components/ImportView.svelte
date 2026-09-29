@@ -3,6 +3,7 @@
   import { t } from '../i18n';
   import { importFromFolder } from '../utils/storage';
   import { groups, refreshGroups } from '../stores/groups';
+  import { withMinLoading } from '../stores/ui';
   import { open } from '@tauri-apps/plugin-dialog';
 
   let folderPath = '';
@@ -21,7 +22,7 @@
     if (!folderPath || !groupName) return;
     importing = true;
     try {
-      const count = await importFromFolder(folderPath, groupName);
+      const count = await withMinLoading(() => importFromFolder(folderPath, groupName));
       message = $t('import.success', { count });
       await refreshGroups();
     } catch (e) {
@@ -44,9 +45,7 @@
     В какую группу импортировать:
     <select bind:value={groupName}>
       <option value="">— выбери группу —</option>
-      {#each $groups as g}
-        <option value={g.name}>{g.name}</option>
-      {/each}
+      {#each $groups as g}<option value={g.name}>{g.name}</option>{/each}
     </select>
   </label>
 
@@ -54,34 +53,19 @@
     {#if importing}<span class="loader"></span> Импорт...{:else}📥 {$t('import.import')}{/if}
   </button>
 
-  {#if message}
-    <p class="message">{message}</p>
-  {/if}
+  {#if message}<p class="message">{message}</p>{/if}
 </div>
 
 <style>
   .import-view { padding: 16px; }
   h2 { margin: 0 0 16px; font-size: 1.1rem; }
   label { display: block; margin-bottom: 16px; font-size: 0.9rem; color: #555; }
-  select, input {
-    width: 100%; padding: 8px; margin-top: 4px;
-    border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;
-  }
+  select { width: 100%; padding: 8px; margin-top: 4px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
   .folder-btn { background: #eee; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; margin-top: 4px; }
   .path { display: block; font-size: 0.8rem; color: #999; margin-top: 4px; }
-  .import-btn {
-    background: #4a90d9; color: white; border: none;
-    padding: 10px 20px; border-radius: 4px; cursor: pointer;
-    display: inline-flex; align-items: center; gap: 8px;
-  }
+  .import-btn { background: #4a90d9; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
   .import-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-  .loader {
-    width: 16px; height: 16px;
-    border: 2px solid rgba(255,255,255,0.3);
-    border-top-color: white;
-    border-radius: 50%;
-    animation: spin 0.6s linear infinite;
-  }
+  .loader { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.6s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .message { margin-top: 16px; color: #5cb85c; }
 </style>

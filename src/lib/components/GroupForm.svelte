@@ -1,7 +1,7 @@
 <script lang="ts">
   import { t } from '../i18n';
   import { addGroup, updateGroup } from '../stores/groups';
-  import { loading } from '../stores/ui';
+  import { withMinLoading } from '../stores/ui';
   import type { Group } from '../utils/storage';
 
   export let onClose: () => void;
@@ -17,17 +17,14 @@
   async function save() {
     if (!name.trim()) return;
     saving = true;
-    $loading = true;
     const group: Group = { name: name.trim(), students: students.filter(s => s.trim()) };
     try {
-      if (editGroup) {
-        await updateGroup(group);
-      } else {
-        await addGroup(group);
-      }
+      await withMinLoading(async () => {
+        if (editGroup) await updateGroup(group);
+        else await addGroup(group);
+      });
     } finally {
       saving = false;
-      $loading = false;
       onClose();
     }
   }

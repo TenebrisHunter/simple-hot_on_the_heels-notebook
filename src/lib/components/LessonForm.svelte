@@ -2,7 +2,7 @@
   import { t } from '../i18n';
   import { addLesson } from '../stores/lessons';
   import { groups } from '../stores/groups';
-  import { loading, confirmMessage, confirmCallback } from '../stores/ui';
+  import { withMinLoading, confirmMessage, confirmCallback } from '../stores/ui';
   import { lessonExists } from '../utils/storage';
   import type { Lesson, Student } from '../utils/storage';
   import StudentChecklist from './StudentChecklist.svelte';
@@ -28,13 +28,13 @@
 
   async function doSave(overwrite: boolean) {
     saving = true;
-    $loading = true;
     const lesson: Lesson = { date, time, hours, topic, materials, students: editableStudents, marked };
     try {
-      await addLesson(groupName, lesson, overwrite);
+      await withMinLoading(async () => {
+        await addLesson(groupName, lesson, overwrite);
+      });
     } finally {
       saving = false;
-      $loading = false;
       onClose();
     }
   }
@@ -42,13 +42,12 @@
   async function save() {
     const exists = await lessonExists(groupName, date);
     if (exists) {
-      $confirmMessage = `В этот день у группы «${groupName}» уже было занятие. Пересохранить или сохранить как новое?`;
+      $confirmMessage = `В этот день у группы «${groupName}» уже было занятие. Пересохранить?`;
       $confirmCallback = () => {
         $confirmMessage = null;
         $confirmCallback = null;
         doSave(true);
       };
-      // Второй вариант — кнопка «Сохранить как новое» через отдельный диалог
       return;
     }
     await doSave(false);
