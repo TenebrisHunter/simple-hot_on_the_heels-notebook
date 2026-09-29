@@ -41,7 +41,7 @@
   }
 
   function askDeleteL(fileId: string) {
-    $confirmMessage = 'Удалить запись навсегда?';
+    $confirmMessage = `Удалить запись навсегда?`;
     $confirmCallback = async () => {
       await deleteTrashLesson(trashGroup, fileId);
       $confirmMessage = null;
@@ -51,13 +51,22 @@
   }
 
   function askDeleteG(trashName: string) {
-    $confirmMessage = 'Удалить группу навсегда?';
+    $confirmMessage = `Удалить группу «${cleanGroupName(trashName)}» навсегда?`;
     $confirmCallback = async () => {
       await deleteTrashGroup(trashName);
       $confirmMessage = null;
       $confirmCallback = null;
       await loadGroups();
     };
+  }
+
+  /// Убирает timestamp из имени группы для отображения
+  function cleanGroupName(trashName: string): string {
+    const parts = trashName.split('_');
+    if (parts.length >= 2 && /^\d+$/.test(parts[parts.length - 1])) {
+      parts.pop();
+    }
+    return parts.join('_');
   }
 </script>
 
@@ -66,8 +75,8 @@
   <p class="hint">Записи хранятся 30 дней, потом удаляются автоматически.</p>
 
   <div class="tabs">
-    <button class:active={tab === 'lessons'} on:click={() => tab = 'lessons'}>Занятия</button>
-    <button class:active={tab === 'groups'} on:click={() => tab = 'groups'}>Группы</button>
+    <button class:active={tab === 'lessons'} on:click={() => tab = 'lessons'}>📚 Занятия</button>
+    <button class:active={tab === 'groups'} on:click={() => tab = 'groups'}>👥 Группы</button>
   </div>
 
   {#if tab === 'lessons'}
@@ -99,7 +108,7 @@
     {:else}
       {#each groupsFiles as file}
         <div class="item">
-          <span>{file}</span>
+          <span>{cleanGroupName(file)}</span>
           <div class="actions">
             <button class="restore" on:click={() => restoreG(file)}>↩️ Восстановить</button>
             <button class="delete" on:click={() => askDeleteG(file)}>🗑️ Удалить навсегда</button>

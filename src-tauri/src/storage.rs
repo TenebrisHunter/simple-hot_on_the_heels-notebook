@@ -308,3 +308,10 @@ fn format_lesson(lesson: &Lesson) -> String {
     }
     out
 }
+/// Переключает отметку «в журнале» у занятия
+pub fn toggle_mark(group_name: &str, lesson: &Lesson) -> Result<(), String> {
+    let mut updated = lesson.clone();
+    updated.marked = !updated.marked;
+    save_lesson(group_name, &updated, true)?;
+    Ok(())
+}

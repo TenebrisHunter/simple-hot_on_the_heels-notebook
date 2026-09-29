@@ -1,6 +1,6 @@
 <script lang="ts">
   import { t } from '../i18n';
-  import { lessons, refreshLessons, removeLesson, removeLessons } from '../stores/lessons';
+  import { lessons, refreshLessons, removeLesson, removeLessons, toggleMark } from '../stores/lessons';
   import { groups } from '../stores/groups';
   import { lessonsGroup, view, selectedLesson, confirmMessage, confirmCallback, selectedLessons } from '../stores/ui';
   import LessonForm from './LessonForm.svelte';
@@ -20,9 +20,15 @@
   function selectAll() { $selectedLessons = new Set($lessons.map(l => l.file_id || '')); }
   function clearAll() { $selectedLessons = new Set(); }
 
+  async function onToggleMark(lesson: any, event: MouseEvent) {
+    event.stopPropagation();
+    if (!$lessonsGroup) return;
+    await toggleMark($lessonsGroup, lesson);
+  }
+
   function askDeleteOne(lesson: any, event: MouseEvent) {
     event.stopPropagation();
-    $confirmMessage = $t('lessons.confirm_delete');
+    $confirmMessage = `Удалить занятие от ${lesson.date} ${lesson.time}? Оно попадёт в корзину.`;
     $confirmCallback = async () => {
       if ($lessonsGroup && lesson.file_id) await removeLesson($lessonsGroup, lesson.file_id);
       $confirmMessage = null;
@@ -57,7 +63,7 @@
   {#if $lessonsGroup && $lessons.length > 0}
     <div class="bulk">
       <button on:click={selectAll}>✅ Выбрать все</button>
-      <button on:click={clearAll}>⬜ Снять все</button>
+      <button on:click={clearAll}>🔄 Снять все</button>
       <button class="danger" on:click={askDeleteSelected} disabled={$selectedLessons.size === 0}>
         🗑️ Удалить выбранные ({$selectedLessons.size})
       </button>
@@ -77,10 +83,10 @@
           <span class="topic">{lesson.topic || '—'}</span>
           <span class="hours">{lesson.hours} ч.</span>
         </div>
-        <span class="mark" class:marked={lesson.marked}>
+        <button class="mark-btn" class:marked={lesson.marked} on:click={(e) => onToggleMark(lesson, e)}>
           {lesson.marked ? '✓ В журнале' : '○ Не в журнале'}
-        </span>
-        <button class="btn delete" on:click={(e) => askDeleteOne(lesson, e)}>🗑️</button>
+        </button>
+        <button class="btn delete" on:click={(e) => askDeleteOne(lesson, e)} title="Удалить">🗑️ Удалить</button>
       </div>
     {/each}
   {/if}
@@ -103,8 +109,8 @@
   .info { flex: 1; cursor: pointer; }
   .topic { color: #666; font-size: 0.85rem; margin-left: 12px; }
   .hours { color: #999; font-size: 0.85rem; margin-left: 12px; }
-  .mark { font-size: 0.8rem; color: #999; padding: 4px 8px; border-radius: 4px; background: #f5f5f5; }
-  .mark.marked { color: #2e7d32; background: #e8f5e9; }
-  .btn { border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 0.9rem; }
+  .mark-btn { border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; background: #f5f5f5; color: #999; }
+  .mark-btn.marked { background: #e8f5e9; color: #2e7d32; }
+  .btn { border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
   .btn.delete { background: #fdecea; color: #d9534f; }
 </style>

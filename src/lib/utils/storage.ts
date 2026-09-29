@@ -39,3 +39,6 @@ export async function deleteTrashLesson(groupName: string, fileId: string): Prom
 }
 export async function deleteTrashGroup(trashName: string): Promise<void> { await invoke('delete_trash_group', { trashName }); }
 export async function cleanOldTrash(): Promise<void> { await invoke('clean_old_trash'); }
+export async function toggleMark(groupName: string, lesson: Lesson): Promise<void> {
+  await invoke('toggle_mark', { groupName, lesson });
+}

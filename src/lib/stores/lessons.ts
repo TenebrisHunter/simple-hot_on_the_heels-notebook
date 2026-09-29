@@ -14,6 +14,12 @@ export async function addLesson(groupName: string, lesson: Lesson, overwrite: bo
   return id;
 }
 
+export async function toggleMark(groupName: string, lesson: Lesson) {
+  const updated = { ...lesson, marked: !lesson.marked };
+  await saveLesson(groupName, updated, true);
+  await refreshLessons(groupName);
+}
+
 export async function removeLesson(groupName: string, fileId: string) {
   await deleteLesson(groupName, fileId);
   await refreshLessons(groupName);
