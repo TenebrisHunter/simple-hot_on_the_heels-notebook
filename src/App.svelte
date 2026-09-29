@@ -14,10 +14,10 @@
   <header>
     <h1>{$t('app.title')}</h1>
     <nav>
-      <button class:active={$view === 'groups'} on:click={() => $view = 'groups'}>{$t('nav.groups')}</button>
-      <button class:active={$view === 'lessons'} on:click={() => $view = 'lessons'}>{$t('nav.lessons')}</button>
-      <button class:active={$view === 'import'} on:click={() => $view = 'import'}>{$t('nav.import')}</button>
-      <button class:active={$view === 'trash'} on:click={() => $view = 'trash'}>{$t('nav.trash')}</button>
+      <button class:active={$view === 'groups'} on:click={() => $view = 'groups'}>👥 {$t('nav.groups')}</button>
+      <button class:active={$view === 'lessons'} on:click={() => $view = 'lessons'}>📚 {$t('nav.lessons')}</button>
+      <button class:active={$view === 'import'} on:click={() => $view = 'import'}>📥 {$t('nav.import')}</button>
+      <button class:active={$view === 'trash'} on:click={() => $view = 'trash'}>🗑️ {$t('nav.trash')}</button>
     </nav>
   </header>
 
@@ -41,9 +41,9 @@
 <style>
   :global(body) { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: #fafafa; }
   main { max-width: 900px; margin: 0 auto; padding: 16px; }
-  header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 16px; }
+  header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
   h1 { font-size: 1.2rem; margin: 0; }
-  nav { display: flex; gap: 8px; }
+  nav { display: flex; gap: 8px; flex-wrap: wrap; }
   nav button { background: none; border: none; padding: 6px 12px; cursor: pointer; border-radius: 4px; font-size: 0.9rem; }
   nav button.active { background: #4a90d9; color: white; }
 </style>

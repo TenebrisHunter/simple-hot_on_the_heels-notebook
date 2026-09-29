@@ -1,37 +1,25 @@
 import { writable } from 'svelte/store';
 import type { Lesson } from '../utils/storage';
-import { loadLessons, saveLesson, deleteLesson } from '../utils/storage';
+import { loadLessons, saveLesson, deleteLesson, deleteLessons } from '../utils/storage';
 
 export const lessons = writable<Lesson[]>([]);
 
 export async function refreshLessons(groupName: string) {
-  const list = await loadLessons(groupName);
-  lessons.set(list);
+  lessons.set(await loadLessons(groupName));
 }
 
-export async function addLesson(groupName: string, lesson: Lesson) {
-  await saveLesson(groupName, lesson);
+export async function addLesson(groupName: string, lesson: Lesson, overwrite: boolean): Promise<string> {
+  const id = await saveLesson(groupName, lesson, overwrite);
+  await refreshLessons(groupName);
+  return id;
+}
+
+export async function removeLesson(groupName: string, fileId: string) {
+  await deleteLesson(groupName, fileId);
   await refreshLessons(groupName);
 }
 
-export async function updateLesson(groupName: string, lesson: Lesson) {
-  await saveLesson(groupName, lesson);
-  await refreshLessons(groupName);
-}
-
-export async function removeLesson(groupName: string, date: string) {
-  await deleteLesson(groupName, date);
-  await refreshLessons(groupName);
-}
-
-/// Пометить несколько занятий как отмеченные/неотмеченные
-export async function markLessons(groupName: string, dates: string[], marked: boolean) {
-  const list = await loadLessons(groupName);
-  for (const lesson of list) {
-    if (dates.includes(lesson.date)) {
-      (lesson as any).marked = marked;
-      await saveLesson(groupName, lesson);
-    }
-  }
+export async function removeLessons(groupName: string, fileIds: string[]) {
+  await deleteLessons(groupName, fileIds);
   await refreshLessons(groupName);
 }

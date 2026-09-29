@@ -2,18 +2,13 @@
   import { onMount } from 'svelte';
   import { t } from '../i18n';
   import { groups, refreshGroups, removeGroup } from '../stores/groups';
-  import { selectedGroup, view, confirmMessage, confirmCallback } from '../stores/ui';
+  import { confirmMessage, confirmCallback } from '../stores/ui';
   import GroupForm from './GroupForm.svelte';
 
   let showForm = false;
   let editGroup: any = null;
 
   onMount(refreshGroups);
-
-  function selectGroup(name: string) {
-    $selectedGroup = name;
-    $view = 'lessons';
-  }
 
   function askDelete(name: string, event: MouseEvent) {
     event.stopPropagation();
@@ -25,9 +20,13 @@
     };
   }
 
-  function openEdit(group: any, event: MouseEvent) {
-    event.stopPropagation();
+  function openEdit(group: any) {
     editGroup = group;
+    showForm = true;
+  }
+
+  function openCreate() {
+    editGroup = null;
     showForm = true;
   }
 </script>
@@ -35,21 +34,21 @@
 <div class="group-list">
   <div class="header">
     <h2>{$t('groups.title')}</h2>
-    <button class="add" on:click={() => { editGroup = null; showForm = true; }}>+ {$t('groups.add')}</button>
+    <button class="add" on:click={openCreate}>➕ {$t('groups.add')}</button>
   </div>
 
   {#if $groups.length === 0}
     <p class="empty">{$t('groups.empty')}</p>
   {:else}
     {#each $groups as group}
-      <div class="group-item" role="button" tabindex="0" on:click={() => selectGroup(group.name)} on:keydown={(e) => e.key === 'Enter' && selectGroup(group.name)}>
-        <div>
+      <div class="group-item">
+        <div class="info">
           <strong>{group.name}</strong>
           <span class="count">{group.students.length} чел.</span>
         </div>
         <div class="actions">
-          <button class="edit" on:click={(e) => openEdit(group, e)}>✎</button>
-          <button class="delete" on:click={(e) => askDelete(group.name, e)}>×</button>
+          <button class="btn edit" on:click={() => openEdit(group)}>✏️ Редактировать</button>
+          <button class="btn delete" on:click={(e) => askDelete(group.name, e)}>🗑️ Удалить</button>
         </div>
       </div>
     {/each}
@@ -63,12 +62,13 @@
 <style>
   .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
   h2 { margin: 0; font-size: 1.1rem; }
-  .add { background: #4a90d9; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
+  .add { background: #4a90d9; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 0.9rem; }
   .empty { color: #999; text-align: center; padding: 32px; }
-  .group-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border: 1px solid #eee; border-radius: 6px; margin-bottom: 8px; cursor: pointer; transition: background 0.15s; }
-  .group-item:hover { background: #f8f8f8; }
+  .group-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border: 1px solid #eee; border-radius: 6px; margin-bottom: 8px; }
+  .info { flex: 1; }
   .count { color: #999; font-size: 0.85rem; margin-left: 12px; }
-  .actions { display: flex; gap: 4px; }
-  .edit { background: none; border: none; color: #4a90d9; font-size: 1.1rem; cursor: pointer; padding: 4px 8px; }
-  .delete { background: none; border: none; color: #d9534f; font-size: 1.2rem; cursor: pointer; padding: 4px 8px; }
+  .actions { display: flex; gap: 8px; }
+  .btn { border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
+  .btn.edit { background: #eee; color: #333; }
+  .btn.delete { background: #fdecea; color: #d9534f; }
 </style>

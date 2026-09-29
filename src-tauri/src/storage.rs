@@ -18,12 +18,15 @@ pub struct Group {
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Lesson {
     pub date: String,
+    pub time: String,
     pub hours: f64,
     pub topic: String,
     pub materials: String,
     pub students: Vec<Student>,
     #[serde(default)]
     pub marked: bool,
+    #[serde(default)]
+    pub file_id: String,
 }
 
 pub fn data_dir() -> PathBuf {
@@ -69,9 +72,14 @@ pub fn save_group(group: &Group) -> Result<(), String> {
     Ok(())
 }
 
+/// Удаляет группу в корзину
 pub fn delete_group(name: &str) -> Result<(), String> {
-    let dir = data_dir().join(name);
-    if dir.exists() { fs::remove_dir_all(&dir).map_err(|e| e.to_string())?; }
+    let src = data_dir().join(name);
+    if !src.exists() { return Err("Группа не найдена".to_string()); }
+    let trash = trash_dir().join("groups");
+    fs::create_dir_all(&trash).map_err(|e| e.to_string())?;
+    let dst = trash.join(format!("{}_{}", name, timestamp()));
+    fs::rename(&src, &dst).map_err(|e| e.to_string())?;
     Ok(())
 }
 
@@ -86,80 +94,150 @@ pub fn load_lessons(group_name: &str) -> Result<Vec<Lesson>, String> {
             let name = path.file_name().unwrap().to_string_lossy().to_string();
             if name == "group.txt" { continue; }
             let content = fs::read_to_string(&path).map_err(|e| e.to_string())?;
-            if let Ok(lesson) = parse_lesson(&content) { lessons.push(lesson); }
+            if let Ok(mut lesson) = parse_lesson(&content) {
+                lesson.file_id = name.trim_end_matches(".txt").to_string();
+                lessons.push(lesson);
+            }
         }
     }
-    lessons.sort_by(|a, b| a.date.cmp(&b.date));
+    lessons.sort_by(|a, b| format!("{}{}", a.date, a.time).cmp(&format!("{}{}", b.date, b.time)));
     Ok(lessons)
 }
 
-pub fn save_lesson(group_name: &str, lesson: &Lesson) -> Result<(), String> {
+/// Проверяет, есть ли уже занятие в этот день у группы
+pub fn lesson_exists(group_name: &str, date: &str) -> Result<bool, String> {
     let dir = data_dir().join(group_name);
-    fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
-    let path = dir.join(format!("{}.txt", lesson.date));
-    fs::write(&path, format_lesson(lesson)).map_err(|e| e.to_string())?;
-    Ok(())
+    if !dir.exists() { return Ok(false); }
+    for entry in fs::read_dir(&dir).map_err(|e| e.to_string())? {
+        let entry = entry.map_err(|e| e.to_string())?;
+        let name = entry.file_name().to_string_lossy().to_string();
+        if name.starts_with(date) && name.ends_with(".txt") { return Ok(true); }
+    }
+    Ok(false)
 }
 
-pub fn delete_lesson(group_name: &str, date: &str) -> Result<(), String> {
-    let src = data_dir().join(group_name).join(format!("{}.txt", date));
+pub fn save_lesson(group_name: &str, lesson: &Lesson, overwrite: bool) -> Result<String, String> {
+    let dir = data_dir().join(group_name);
+    fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
+
+    let base = format!("{}_{}", lesson.date, lesson.time.replace(":", "-"));
+    let mut filename = format!("{}.txt", base);
+    let mut path = dir.join(&filename);
+
+    if !overwrite && path.exists() {
+        let mut counter = 1;
+        loop {
+            filename = format!("{}_{}.txt", base, counter);
+            path = dir.join(&filename);
+            if !path.exists() { break; }
+            counter += 1;
+        }
+    }
+
+    fs::write(&path, format_lesson(lesson)).map_err(|e| e.to_string())?;
+    Ok(filename.trim_end_matches(".txt").to_string())
+}
+
+/// Удаляет занятие в корзину
+pub fn delete_lesson(group_name: &str, file_id: &str) -> Result<(), String> {
+    let src = data_dir().join(group_name).join(format!("{}.txt", file_id));
     if !src.exists() { return Err("Файл не найден".to_string()); }
-    let trash = trash_dir().join(group_name);
+    let trash = trash_dir().join("lessons").join(group_name);
     fs::create_dir_all(&trash).map_err(|e| e.to_string())?;
-    let dst = trash.join(format!("{}_{}.txt", date, timestamp()));
+    let dst = trash.join(format!("{}.txt", file_id));
     fs::rename(&src, &dst).map_err(|e| e.to_string())?;
     Ok(())
 }
 
-/// Список файлов в корзине для группы
-pub fn list_trash(group_name: &str) -> Result<Vec<String>, String> {
-    let dir = trash_dir().join(group_name);
+/// Удаляет несколько занятий в корзину
+pub fn delete_lessons(group_name: &str, file_ids: Vec<String>) -> Result<usize, String> {
+    let mut count = 0;
+    for id in file_ids {
+        if delete_lesson(group_name, &id).is_ok() { count += 1; }
+    }
+    Ok(count)
+}
+
+/// Список занятий в корзине
+pub fn list_trash_lessons(group_name: &str) -> Result<Vec<String>, String> {
+    let dir = trash_dir().join("lessons").join(group_name);
     if !dir.exists() { return Ok(vec![]); }
     let mut files = vec![];
     for entry in fs::read_dir(&dir).map_err(|e| e.to_string())? {
         let entry = entry.map_err(|e| e.to_string())?;
         let name = entry.file_name().to_string_lossy().to_string();
-        if name.ends_with(".txt") { files.push(name); }
+        if name.ends_with(".txt") { files.push(name.trim_end_matches(".txt").to_string()); }
     }
     Ok(files)
 }
 
-/// Восстановить из корзины
-pub fn restore_from_trash(group_name: &str, filename: &str) -> Result<(), String> {
-    let src = trash_dir().join(group_name).join(filename);
+/// Список групп в корзине
+pub fn list_trash_groups() -> Result<Vec<String>, String> {
+    let dir = trash_dir().join("groups");
+    if !dir.exists() { return Ok(vec![]); }
+    let mut groups = vec![];
+    for entry in fs::read_dir(&dir).map_err(|e| e.to_string())? {
+        let entry = entry.map_err(|e| e.to_string())?;
+        let name = entry.file_name().to_string_lossy().to_string();
+        if entry.path().is_dir() { groups.push(name); }
+    }
+    Ok(groups)
+}
+
+pub fn restore_trash_lesson(group_name: &str, file_id: &str) -> Result<(), String> {
+    let src = trash_dir().join("lessons").join(group_name).join(format!("{}.txt", file_id));
     if !src.exists() { return Err("Файл не найден".to_string()); }
-    let date = filename.split('_').next().unwrap_or("").to_string();
-    let dst = data_dir().join(group_name).join(format!("{}.txt", date));
+    let dst_dir = data_dir().join(group_name);
+    fs::create_dir_all(&dst_dir).map_err(|e| e.to_string())?;
+    let dst = dst_dir.join(format!("{}.txt", file_id));
     fs::rename(&src, &dst).map_err(|e| e.to_string())?;
     Ok(())
 }
 
-/// Удалить из корзины навсегда
-pub fn delete_from_trash(group_name: &str, filename: &str) -> Result<(), String> {
-    let path = trash_dir().join(group_name).join(filename);
+pub fn restore_trash_group(trash_name: &str) -> Result<(), String> {
+    let src = trash_dir().join("groups").join(trash_name);
+    if !src.exists() { return Err("Группа не найдена".to_string()); }
+    let real_name = trash_name.rsplitn(2, '_').nth(1).unwrap_or(trash_name);
+    let dst = data_dir().join(real_name);
+    if dst.exists() { return Err("Группа уже существует".to_string()); }
+    fs::rename(&src, &dst).map_err(|e| e.to_string())?;
+    Ok(())
+}
+
+pub fn delete_trash_lesson(group_name: &str, file_id: &str) -> Result<(), String> {
+    let path = trash_dir().join("lessons").join(group_name).join(format!("{}.txt", file_id));
     if path.exists() { fs::remove_file(&path).map_err(|e| e.to_string())?; }
     Ok(())
 }
 
-/// Очистить корзину от старых файлов (старше 30 дней)
+pub fn delete_trash_group(trash_name: &str) -> Result<(), String> {
+    let path = trash_dir().join("groups").join(trash_name);
+    if path.exists() { fs::remove_dir_all(&path).map_err(|e| e.to_string())?; }
+    Ok(())
+}
+
 pub fn clean_old_trash() -> Result<(), String> {
     let dir = trash_dir();
     if !dir.exists() { return Ok(()); }
     let now = std::time::SystemTime::now();
     let thirty_days = std::time::Duration::from_secs(30 * 24 * 60 * 60);
-    for group_entry in fs::read_dir(&dir).map_err(|e| e.to_string())? {
-        let group_entry = group_entry.map_err(|e| e.to_string())?;
-        if !group_entry.path().is_dir() { continue; }
-        for file_entry in fs::read_dir(group_entry.path()).map_err(|e| e.to_string())? {
-            let file_entry = file_entry.map_err(|e| e.to_string())?;
-            let metadata = file_entry.metadata().map_err(|e| e.to_string())?;
-            if let Ok(modified) = metadata.modified() {
-                if now.duration_since(modified).unwrap_or_default() > thirty_days {
-                    let _ = fs::remove_file(file_entry.path());
+    fn walk(dir: &Path, now: std::time::SystemTime, max_age: std::time::Duration) {
+        if let Ok(entries) = fs::read_dir(dir) {
+            for entry in entries.flatten() {
+                let path = entry.path();
+                if path.is_dir() {
+                    walk(&path, now, max_age);
+                } else if let Ok(meta) = entry.metadata() {
+                    if let Ok(modified) = meta.modified() {
+                        if now.duration_since(modified).unwrap_or_default() > max_age {
+                            let _ = fs::remove_file(&path);
+                        }
+                    }
                 }
             }
         }
     }
+    walk(&dir, now, thirty_days);
     Ok(())
 }
 
@@ -188,6 +266,7 @@ fn timestamp() -> u64 {
 
 fn parse_lesson(content: &str) -> Result<Lesson, String> {
     let mut date = String::new();
+    let mut time = String::new();
     let mut hours = 0.0;
     let mut topic = String::new();
     let mut materials = String::new();
@@ -195,6 +274,7 @@ fn parse_lesson(content: &str) -> Result<Lesson, String> {
     let mut students = vec![];
     for line in content.lines() {
         if let Some(v) = line.strip_prefix("Дата: ") { date = v.to_string(); }
+        else if let Some(v) = line.strip_prefix("Время: ") { time = v.to_string(); }
         else if let Some(v) = line.strip_prefix("Часы: ") { hours = v.parse().unwrap_or(0.0); }
         else if let Some(v) = line.strip_prefix("Тема: ") { topic = v.to_string(); }
         else if let Some(v) = line.strip_prefix("Материалы: ") { materials = v.to_string(); }
@@ -210,12 +290,13 @@ fn parse_lesson(content: &str) -> Result<Lesson, String> {
             }
         }
     }
-    Ok(Lesson { date, hours, topic, materials, students, marked })
+    Ok(Lesson { date, time, hours, topic, materials, students, marked, file_id: String::new() })
 }
 
 fn format_lesson(lesson: &Lesson) -> String {
     let mut out = String::new();
     out.push_str(&format!("Дата: {}\n", lesson.date));
+    out.push_str(&format!("Время: {}\n", lesson.time));
     out.push_str(&format!("Часы: {}\n", lesson.hours));
     out.push_str(&format!("Тема: {}\n", lesson.topic));
     out.push_str(&format!("Материалы: {}\n", lesson.materials));
