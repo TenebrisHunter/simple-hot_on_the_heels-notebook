@@ -14,6 +14,10 @@ pub fn run() {
             commands::save_lesson,
             commands::delete_lesson,
             commands::import_from_folder,
+            commands::list_trash,
+            commands::restore_from_trash,
+            commands::delete_from_trash,
+            commands::clean_old_trash,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

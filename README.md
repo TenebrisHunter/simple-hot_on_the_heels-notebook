@@ -1,7 +1,36 @@
-# Tauri + SvelteKit + TypeScript
+# simple-hot_on_the_heels-notebook
 
-This template should help get you started developing with Tauri, SvelteKit and TypeScript in Vite.
+Дневник занятий для тренера — быстрая фиксация посещаемости, часов, тем и материалов.
 
-## Recommended IDE Setup
+## Что это?
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer).
+Десктопное приложение, которое позволяет после занятия быстро:
+- отметить, кто был;
+- записать часы, тему, материалы;
+- скопировать данные в Яндекс.Таблицы (как HTML-таблицу или текст).
+
+## Стек
+
+- Tauri 2
+- Svelte 5 + TypeScript
+- Rust (ядро)
+- SQLite не используется — только `.txt` файлы
+
+## Структура данных
+
+
+
+
+## Установка
+
+См. `INSTALL_RU.txt` и `INSTALL_EN.txt`.
+
+## Авторы
+
+Ключенко М.А.
+Омск, ОмГТУ, БИТ-211
+АНО ЦО ДО «Махаон»
+
+## Лицензия
+
+MIT — см. `LICENSE`.

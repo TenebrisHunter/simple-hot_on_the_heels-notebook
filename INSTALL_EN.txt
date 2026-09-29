@@ -1,0 +1,11 @@
+============================================================
+  simple-hot_on_the_heels-notebook — Installation
+============================================================
+
+1. Download the installer from GitHub Releases.
+2. Run the .exe or .msi.
+3. Follow the installer instructions.
+4. Launch the app from the Start menu.
+
+Data is stored in the data/ folder next to the app.
+Trash keeps deleted entries for 30 days.

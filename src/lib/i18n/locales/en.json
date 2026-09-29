@@ -1,8 +1,8 @@
-﻿{
+{
   "app": { "title": "Lesson Diary" },
-  "nav": { "groups": "Groups", "lessons": "Lessons", "import": "Import" },
+  "nav": { "groups": "Groups", "lessons": "Lessons", "import": "Import", "trash": "Trash" },
   "groups": {
-    "title": "Groups", "add": "Add group", "name": "Group name",
+    "title": "Groups", "add": "Add group", "edit": "Edit group", "name": "Group name",
     "students": "Students", "student_name": "Student name",
     "add_student": "Add student", "remove_student": "Remove student",
     "save": "Save", "delete": "Delete group",
