@@ -8,23 +8,3 @@ export const loading = writable<boolean>(false);
 export const confirmMessage = writable<string | null>(null);
 export const confirmCallback = writable<(() => void) | null>(null);
 export const selectedLessons = writable<Set<string>>(new Set());
-
-/// Минимальное время показа загрузки (мс)
-const MIN_LOADING_MS = 400;
-
-/// Оборачивает async-операцию, гарантируя, что loading
-/// будет виден минимум MIN_LOADING_MS миллисекунд.
-export async function withMinLoading<T>(fn: () => Promise<T>): Promise<T> {
-  loading.set(true);
-  const start = Date.now();
-  try {
-    const result = await fn();
-    const elapsed = Date.now() - start;
-    if (elapsed < MIN_LOADING_MS) {
-      await new Promise(r => setTimeout(r, MIN_LOADING_MS - elapsed));
-    }
-    return result;
-  } finally {
-    loading.set(false);
-  }
-}

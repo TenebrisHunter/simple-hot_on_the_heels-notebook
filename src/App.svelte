@@ -5,9 +5,8 @@
   import LessonView from './lib/components/LessonView.svelte';
   import ImportView from './lib/components/ImportView.svelte';
   import TrashView from './lib/components/TrashView.svelte';
-  import LoadingBar from './lib/components/LoadingBar.svelte';
   import ConfirmDialog from './lib/components/ConfirmDialog.svelte';
-  import { view, loading, confirmMessage, confirmCallback } from './lib/stores/ui';
+  import { view, confirmMessage, confirmCallback } from './lib/stores/ui';
 </script>
 
 <main>
@@ -20,8 +19,6 @@
       <button class:active={$view === 'trash'} on:click={() => $view = 'trash'}>🗑️ {$t('nav.trash')}</button>
     </nav>
   </header>
-
-  <LoadingBar active={$loading} />
 
   <section>
     {#if $view === 'groups'}<GroupList />

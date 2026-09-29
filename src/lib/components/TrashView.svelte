@@ -7,15 +7,26 @@
     restoreTrashLesson, restoreTrashGroup,
     deleteTrashLesson, deleteTrashGroup
   } from '../utils/storage';
+  import LoadingSpinner from './LoadingSpinner.svelte';
 
   let tab: 'lessons' | 'groups' = 'lessons';
   let trashGroup = '';
   let lessonsFiles: string[] = [];
   let groupsFiles: string[] = [];
   let loading = false;
+  let busyId: string | null = null;
 
   $: if (trashGroup && tab === 'lessons') loadLessons();
   $: if (tab === 'groups') loadGroups();
+
+  function minDelay<T>(fn: () => Promise<T>, ms: number = 400): Promise<T> {
+    const start = Date.now();
+    return fn().then(async (r) => {
+      const elapsed = Date.now() - start;
+      if (elapsed < ms) await new Promise(res => setTimeout(res, ms - elapsed));
+      return r;
+    });
+  }
 
   async function loadLessons() {
     loading = true;
@@ -30,42 +41,67 @@
   }
 
   async function restoreL(fileId: string) {
-    await restoreTrashLesson(trashGroup, fileId);
-    await loadLessons();
+    busyId = fileId;
+    try {
+      await minDelay(async () => {
+        await restoreTrashLesson(trashGroup, fileId);
+        await loadLessons();
+      });
+    } finally {
+      busyId = null;
+    }
   }
 
   async function restoreG(trashName: string) {
-    await restoreTrashGroup(trashName);
-    await loadGroups();
-    await refreshGroups();
+    busyId = trashName;
+    try {
+      await minDelay(async () => {
+        await restoreTrashGroup(trashName);
+        await loadGroups();
+        await refreshGroups();
+      });
+    } finally {
+      busyId = null;
+    }
   }
 
   function askDeleteL(fileId: string) {
     $confirmMessage = `Удалить запись навсегда?`;
     $confirmCallback = async () => {
-      await deleteTrashLesson(trashGroup, fileId);
       $confirmMessage = null;
       $confirmCallback = null;
-      await loadLessons();
+      busyId = fileId;
+      try {
+        await minDelay(async () => {
+          await deleteTrashLesson(trashGroup, fileId);
+          await loadLessons();
+        });
+      } finally {
+        busyId = null;
+      }
     };
   }
 
   function askDeleteG(trashName: string) {
     $confirmMessage = `Удалить группу «${cleanGroupName(trashName)}» навсегда?`;
     $confirmCallback = async () => {
-      await deleteTrashGroup(trashName);
       $confirmMessage = null;
       $confirmCallback = null;
-      await loadGroups();
+      busyId = trashName;
+      try {
+        await minDelay(async () => {
+          await deleteTrashGroup(trashName);
+          await loadGroups();
+        });
+      } finally {
+        busyId = null;
+      }
     };
   }
 
-  /// Убирает timestamp из имени группы для отображения
   function cleanGroupName(trashName: string): string {
     const parts = trashName.split('_');
-    if (parts.length >= 2 && /^\d+$/.test(parts[parts.length - 1])) {
-      parts.pop();
-    }
+    if (parts.length >= 2 && /^\d+$/.test(parts[parts.length - 1])) parts.pop();
     return parts.join('_');
   }
 </script>
@@ -96,8 +132,12 @@
         <div class="item">
           <span>{file}</span>
           <div class="actions">
-            <button class="restore" on:click={() => restoreL(file)}>↩️ Восстановить</button>
-            <button class="delete" on:click={() => askDeleteL(file)}>🗑️ Удалить навсегда</button>
+            <button class="restore" on:click={() => restoreL(file)} disabled={busyId === file}>
+              {#if busyId === file}<LoadingSpinner active size={14} color="#2e7d32" />{:else}↩️ Восстановить{/if}
+            </button>
+            <button class="delete" on:click={() => askDeleteL(file)} disabled={busyId === file}>
+              {#if busyId === file}<LoadingSpinner active size={14} color="#d9534f" />{:else}🗑️ Удалить навсегда{/if}
+            </button>
           </div>
         </div>
       {/each}
@@ -110,8 +150,12 @@
         <div class="item">
           <span>{cleanGroupName(file)}</span>
           <div class="actions">
-            <button class="restore" on:click={() => restoreG(file)}>↩️ Восстановить</button>
-            <button class="delete" on:click={() => askDeleteG(file)}>🗑️ Удалить навсегда</button>
+            <button class="restore" on:click={() => restoreG(file)} disabled={busyId === file}>
+              {#if busyId === file}<LoadingSpinner active size={14} color="#2e7d32" />{:else}↩️ Восстановить{/if}
+            </button>
+            <button class="delete" on:click={() => askDeleteG(file)} disabled={busyId === file}>
+              {#if busyId === file}<LoadingSpinner active size={14} color="#d9534f" />{:else}🗑️ Удалить навсегда{/if}
+            </button>
           </div>
         </div>
       {/each}
@@ -131,6 +175,8 @@
   .empty { color: #999; text-align: center; padding: 32px; }
   .item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border: 1px solid #eee; border-radius: 6px; margin-bottom: 8px; }
   .actions { display: flex; gap: 8px; }
-  .restore { background: #e8f5e9; color: #2e7d32; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
-  .delete { background: #fdecea; color: #d9534f; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
+  .restore, .delete { border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; min-width: 150px; justify-content: center; }
+  .restore { background: #e8f5e9; color: #2e7d32; }
+  .delete { background: #fdecea; color: #d9534f; }
+  .restore:disabled, .delete:disabled { opacity: 0.7; cursor: wait; }
 </style>

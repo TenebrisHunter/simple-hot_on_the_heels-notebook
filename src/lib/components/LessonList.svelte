@@ -24,12 +24,24 @@
   function selectAll() { $selectedLessons = new Set($lessons.map(l => l.file_id || '')); }
   function clearAll() { $selectedLessons = new Set(); }
 
+  /// Минимальная задержка, чтобы спиннер был виден
+  function minDelay<T>(fn: () => Promise<T>, ms: number = 400): Promise<T> {
+    const start = Date.now();
+    return fn().then(async (r) => {
+      const elapsed = Date.now() - start;
+      if (elapsed < ms) await new Promise(res => setTimeout(res, ms - elapsed));
+      return r;
+    });
+  }
+
   async function onToggleMark(lesson: any, event: MouseEvent) {
     event.stopPropagation();
     if (!$lessonsGroup) return;
     togglingId = lesson.file_id;
     try {
-      await toggleMark($lessonsGroup, lesson);
+      await minDelay(async () => {
+        await toggleMark($lessonsGroup, lesson);
+      });
     } finally {
       togglingId = null;
     }
@@ -44,7 +56,9 @@
       if (!$lessonsGroup || !lesson.file_id) return;
       deletingId = lesson.file_id;
       try {
-        await removeLesson($lessonsGroup, lesson.file_id);
+        await minDelay(async () => {
+          await removeLesson($lessonsGroup, lesson.file_id);
+        });
       } finally {
         deletingId = null;
       }
@@ -61,8 +75,10 @@
       if (!$lessonsGroup) return;
       deletingBulk = true;
       try {
-        await removeLessons($lessonsGroup, Array.from($selectedLessons));
-        $selectedLessons = new Set();
+        await minDelay(async () => {
+          await removeLessons($lessonsGroup, Array.from($selectedLessons));
+          $selectedLessons = new Set();
+        });
       } finally {
         deletingBulk = false;
       }
