@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    temp_app_lib::run()
+    simple_hot_on_the_heels_notebook_lib::run()
 }

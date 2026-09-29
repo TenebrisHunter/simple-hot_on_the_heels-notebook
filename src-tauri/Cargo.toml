@@ -1,5 +1,5 @@
 [package]
-name = "temp-app"
+name = "simple-hot-on-the-heels-notebook"
 version = "0.1.0"
 description = "A Tauri App"
 authors = ["you"]
