@@ -7,20 +7,47 @@ Author: Klyuchenko M.A.
 Omsk, OmSTU, BIT-211, ANO TSO DO "Makhaon"
 2026
 
---- INSTALLATION ---
+============================================================
+  ⚠️  IMPORTANT: PERSONAL DATA
+============================================================
+
+The app stores all data LOCALLY on your computer,
+in the data/ folder. Data is NOT sent to the internet and
+NOT sent to the developer.
+
+BUT: data is stored IN PLAIN TEXT — in ordinary .txt files.
+Anyone with access to your computer and the data/ folder
+can read it.
+
+By entering other people's personal data into the program
+(student names, absence reasons, etc.), you do so
+KNOWINGLY and AT YOUR OWN RESPONSIBILITY.
+
+Make sure that:
+  - you have the right to store this data;
+  - your computer is password-protected;
+  - the data/ folder is not accessible to outsiders.
+
+============================================================
+  INSTALLATION
+============================================================
 
 1. Download the installer from GitHub Releases.
 2. Run the .exe or .msi.
 3. Follow the installer instructions.
 4. Launch the app from the Start menu.
 
---- DATA ---
+============================================================
+  DATA
+============================================================
 
 Data is stored in the data/ folder next to the app:
   data/groups/   — groups and lessons
   data/trash/    — trash (30 days)
   data/imports/  — import folder
 
---- LICENSE ---
+============================================================
+  LICENSE
+============================================================
 
 MIT — see LICENSE.

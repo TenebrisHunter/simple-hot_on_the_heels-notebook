@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { t } from '../i18n';
   import type { Student } from '../utils/storage';
 

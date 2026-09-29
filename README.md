@@ -1,9 +1,8 @@
 # simple-hot_on_the_heels-notebook
 
-Дневник занятий быстрой фиксации того что было на занятии,посещаемости, часов, тем и материалов с последующей возможностью перенести в стороннюю таблицу. 
-Например, в Яндекс.Таблицы.
+Дневник занятий — быстрая фиксация того, что было на занятии: посещаемости, часов, тем и материалов с последующей возможностью перенести в стороннюю таблицу. Например, в Яндекс.Таблицы.
 
-A lesson diary for coaches — quick recording of attendance, hours, topics and materials, with easy transfer to Yandex Sheets.
+A lesson diary — quick recording of what happened in a lesson: attendance, hours, topics and materials, with the ability to transfer them to an external table. For example, to Yandex Sheets.
 
 ---
 
@@ -15,16 +14,15 @@ A lesson diary for coaches — quick recording of attendance, hours, topics and 
 - скопировать данные в Яндекс.Таблицы как HTML-таблицу;
 - хранить записи локально — без облака и регистрации.
 
-Приложение создано, чтобы вы могли быстро зафиксировать что прошло, а уже потом делать перенос всего в таблицу - в удобное для вас время. 
-Т.е. вы по горячим следам записываете, а потом можете просматривать.
+Приложение создано, чтобы вы могли быстро зафиксировать, что прошло, а уже потом делать перенос всего в таблицу — в удобное для вас время. То есть вы по горячим следам записываете, а потом можете просматривать.
 
-**EN:** A desktop app for coaches. Lets you quickly after a lesson:
+**EN:** A desktop app for teachers. Lets you quickly after a lesson:
 - mark who was present;
 - record hours, topic, materials;
 - copy data to Yandex Sheets as an HTML table;
 - store records locally — no cloud, no registration.
 
-Made to remove the routine of transferring data into the journal.
+The app is made so you can quickly record what happened, and then transfer everything to a table later — at a time convenient for you. That is, you write it down while it is fresh, and can review it later.
 
 ---
 
@@ -59,11 +57,30 @@ Made to remove the routine of transferring data into the journal.
     pnpm install
     pnpm tauri dev
 
+
+---
+
+## ⚠️ Персональные данные / Personal data
+
+**RU:** Приложение хранит все данные **локально** на вашем компьютере, в папке `data/`. Данные **не передаются** в интернет, **не синхронизируются** с облаком и **не отправляются** разработчику.
+
+Однако данные хранятся **в открытом виде** — в обычных текстовых файлах `.txt`. Любой, у кого есть доступ к вашему компьютеру и папке `data/`, сможет их прочитать.
+
+**Внося в программу персональные данные других людей (ФИО учеников, причины пропусков и т.п.), вы делаете это осознанно и под свою ответственность.** Убедитесь, что у вас есть право хранить эти данные, и что ваш компьютер защищён паролем.
+
+**EN:** The app stores all data **locally** on your computer, in the `data/` folder. Data is **not sent** to the internet, **not synced** to the cloud and **not sent** to the developer.
+
+However, data is stored **in plain text** — in ordinary `.txt` files. Anyone with access to your computer and the `data/` folder can read it.
+
+**By entering other people''s personal data into the program (student names, absence reasons, etc.), you do so knowingly and at your own responsibility.** Make sure you have the right to store this data, and that your computer is password-protected.
+
 ---
 
 ## Структура данных / Data structure
 
-Папка data/ рядом с приложением. Внутри:
+**RU:** Папка data/ рядом с приложением. Внутри:
+
+**EN:** The data/ folder next to the app. Inside:
 
     data/
     ├── groups/
@@ -89,40 +106,78 @@ Made to remove the routine of transferring data into the journal.
 ## Возможности / Features
 
 ### Группы / Groups
-- Создание, редактирование, удаление / Create, edit, delete.
-- Часы по умолчанию — подставляются в новое занятие / Default hours — auto-filled in new lessons.
-- Удаление — в корзину (30 дней) / Delete — moves to trash (30 days).
+
+**RU:**
+- Создание, редактирование, удаление.
+- Часы по умолчанию — подставляются в новое занятие.
+- Удаление — в корзину (30 дней).
+
+**EN:**
+- Create, edit, delete.
+- Default hours — auto-filled in new lessons.
+- Delete — moves to trash (30 days).
 
 ### Занятия / Lessons
-- Создание, редактирование, удаление / Create, edit, delete.
-- Отметка посещаемости (галочки) / Attendance checkboxes.
-- Маркер «в журнале / не в журнале» / Mark "in journal / not in journal".
-- Массовое выделение и массовое изменение маркера / Bulk select and bulk mark.
-- Удаление одного / нескольких занятий / Delete one / multiple lessons.
+
+**RU:**
+- Создание, редактирование, удаление.
+- Отметка посещаемости (галочки).
+- Маркер «в журнале / не в журнале».
+- Массовое выделение и массовое изменение маркера.
+- Удаление одного / нескольких занятий.
+
+**EN:**
+- Create, edit, delete.
+- Attendance checkboxes.
+- Mark "in journal / not in journal".
+- Bulk select and bulk mark.
+- Delete one / multiple lessons.
 
 ### Корзина / Trash
-- Занятия и группы хранятся 30 дней / Lessons and groups stored 30 days.
-- Восстановление из корзины / Restore from trash.
-- Удаление навсегда / Delete permanently.
-- Автоочистка старых файлов / Auto-clean old files.
+
+**RU:**
+- Занятия и группы хранятся 30 дней.
+- Восстановление из корзины.
+- Удаление навсегда.
+- Автоочистка старых файлов.
+
+**EN:**
+- Lessons and groups stored 30 days.
+- Restore from trash.
+- Delete permanently.
+- Auto-clean old files.
 
 ### Импорт / экспорт / Import / export
-- Импорт txt из папки / Import txt from folder.
-- HTML-копирование для Яндекс.Таблиц / HTML copy for Yandex Sheets.
-- Копирование отдельных полей / Copy individual fields.
+
+**RU:**
+- Импорт txt из папки.
+- HTML-копирование для Яндекс.Таблиц.
+- Копирование отдельных полей.
+
+**EN:**
+- Import txt from folder.
+- HTML copy for Yandex Sheets.
+- Copy individual fields.
 
 ### UI / UX
-- Спиннеры при сохранении, импорте, удалении / Spinners on save, import, delete.
-- Подтверждение удаления / Delete confirmation.
-- Иконки + текст на кнопках / Icons + text on buttons.
+
+**RU:**
+- Спиннеры при сохранении, импорте, удалении.
+- Подтверждение удаления.
+- Иконки + текст на кнопках.
+
+**EN:**
+- Spinners on save, import, delete.
+- Delete confirmation.
+- Icons + text on buttons.
 
 ---
 
 ## Настройка / Customization
 
-Все параметры — в CSS-файлах компонентов. Меняются прямо в Svelte.
+**RU:** Все параметры — в CSS-файлах компонентов. Меняются прямо в Svelte.
 
-All settings — in component CSS files. Edited directly in Svelte.
+**EN:** All settings — in component CSS files. Edited directly in Svelte.
 
 | Параметр / Parameter | Что делает / What it does | По умолчанию / Default |
 |---|---|---|
@@ -169,10 +224,10 @@ MIT — см. файл LICENSE / see LICENSE.
 Ключенко М.А.
 Омск, ОмГТУ, БИТ-211
 АНО ЦО ДО «Махаон»
-(сделал данную программу, потому что я ненавижу Яндекс таблицы)
+(сделал данную программу, потому что я ненавижу Яндекс.Таблицы)
 
 **EN:**
 Klyuchenko M.A.
 Omsk, OmSTU, BIT-211
 ANO TSO DO "Makhaon"
-(Made this program to remove the routine of transferring lesson data to Yandex Sheets)
+(Made this program because I hate Yandex Sheets)

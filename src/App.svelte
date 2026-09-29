@@ -29,7 +29,8 @@
   </section>
 
   <footer>
-    Дневник занятий · Омск, ОмГТУ, БИТ-211 · Ключенко М.А. · 2026
+    <div class="authors">Дневник занятий · Омск, ОмГТУ, БИТ-211 · Ключенко М.А. · 2026</div>
+    <div class="warning">⚠️ Данные хранятся локально и в открытом виде. Вносите персональные данные осознанно.</div>
   </footer>
 </main>
 
@@ -56,4 +57,6 @@
     color: #999;
     font-size: 0.8rem;
   }
+  footer .authors { margin-bottom: 4px; }
+  footer .warning { color: #b8860b; font-size: 0.75rem; }
 </style>
