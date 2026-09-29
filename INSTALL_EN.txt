@@ -1,11 +1,12 @@
 ============================================================
   simple-hot_on_the_heels-notebook
-  Lesson diary for coaches
+  Lesson diary for teachers
 ============================================================
 
 Author: Klyuchenko M.A.
 Omsk, OmSTU, BIT-211, ANO TSO DO "Makhaon"
-2026
+Version: stable&work_1_[v35]
+Date: 29.09.2026
 
 ============================================================
   ⚠️  IMPORTANT: PERSONAL DATA
@@ -29,13 +30,64 @@ Make sure that:
   - the data/ folder is not accessible to outsiders.
 
 ============================================================
-  INSTALLATION
+  INSTALLATION (WITH INSTALLER)
 ============================================================
 
-1. Download the installer from GitHub Releases.
+1. Download the installer from GitHub Releases:
+   - simple-hot_on_the_heels-notebook_x.x.x_x64-setup.exe
+   - or simple-hot_on_the_heels-notebook_x.x.x_x64_en-US.msi
 2. Run the .exe or .msi.
 3. Follow the installer instructions.
 4. Launch the app from the Start menu.
+
+============================================================
+  RUN WITHOUT INSTALLER (PORTABLE)
+============================================================
+
+If you don't want to install the app, you can run it
+directly — without installation.
+
+OPTION A: run the ready .exe from the build
+
+1. Download the portable archive (if available in Releases).
+2. Unpack it into any folder (e.g., Desktop).
+3. Run simple-hot_on_the_heels-notebook.exe.
+4. A data/ folder will be created next to the .exe.
+
+OPTION B: build from source
+
+Requirements:
+  - Node.js 18+
+  - pnpm
+  - Rust (rustup)
+  - MSVC (Visual Studio Build Tools with C++)
+
+Steps:
+
+1. Clone the repository:
+   git clone https://github.com/TenebrisHunter/simple-hot_on_the_heels-notebook.git
+
+2. Go to the folder:
+   cd simple-hot_on_the_heels-notebook
+
+3. Install dependencies:
+   pnpm install
+
+4. Build the release:
+   pnpm tauri build
+
+5. The ready .exe will be at:
+   src-tauri/target/release/simple-hot_on_the_heels-notebook.exe
+
+6. Copy the .exe anywhere and run it.
+   A data/ folder will be created next to it.
+
+OPTION C: run in development mode
+
+1. Clone the repository (see above).
+2. pnpm install
+3. pnpm tauri dev
+4. The app opens in a Tauri window.
 
 ============================================================
   DATA
@@ -45,6 +97,9 @@ Data is stored in the data/ folder next to the app:
   data/groups/   — groups and lessons
   data/trash/    — trash (30 days)
   data/imports/  — import folder
+
+When you move the .exe elsewhere — the data/ folder
+moves with it (or is created anew).
 
 ============================================================
   LICENSE

@@ -49,7 +49,7 @@
       <input type="number" step="0.5" bind:value={defaultHours} min="0" />
     </label>
 
-    <label>{$t('groups.students')}</label>
+    <div class="label">{$t('groups.students')}</div>
     {#each students as _, i}
       <div class="student-row">
         <input bind:value={students[i]} placeholder={$t('groups.student_name')} />

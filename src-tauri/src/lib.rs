@@ -1,3 +1,9 @@
+// ============================================================
+//  simple-hot_on_the_heels-notebook — ядро
+//  Автор: Ключенко М.А. (Омск, ОмГТУ, БИТ-211)
+//  Версия: stable&work_1_[v35]
+// ============================================================
+
 mod storage;
 mod commands;
 
@@ -23,6 +29,7 @@ pub fn run() {
             commands::delete_trash_lesson,
             commands::delete_trash_group,
             commands::clean_old_trash,
+            commands::toggle_mark,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

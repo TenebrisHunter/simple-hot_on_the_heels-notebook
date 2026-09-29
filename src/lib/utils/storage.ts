@@ -1,3 +1,7 @@
+// ============================================================
+//  storage.ts — обёртка над Tauri-командами
+//  Автор: Ключенко М.А. (Омск, ОмГТУ, БИТ-211)
+// ============================================================
 import { invoke } from '@tauri-apps/api/core';
 
 export interface Student { name: string; present: boolean; reason?: string; }

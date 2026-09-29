@@ -1,3 +1,7 @@
+// ============================================================
+//  commands.rs — Tauri-команды
+//  Автор: Ключенко М.А. (Омск, ОмГТУ, БИТ-211)
+// ============================================================
 use crate::storage::{self, Group, Lesson};
 
 #[tauri::command]
@@ -47,3 +51,7 @@ pub fn delete_trash_group(trash_name: String) -> Result<(), String> { storage::d
 
 #[tauri::command]
 pub fn clean_old_trash() -> Result<(), String> { storage::clean_old_trash() }
+#[tauri::command]
+pub fn toggle_mark(group_name: String, lesson: Lesson) -> Result<(), String> {
+    storage::toggle_mark(&group_name, &lesson)
+}

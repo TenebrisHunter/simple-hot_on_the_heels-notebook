@@ -59,7 +59,7 @@
   <div class="dialog">
     <h2>{$t('lessons.add')} — {groupName}</h2>
 
-    <label>{$t('lessons.students')}</label>
+    <div class="label">{$t('lessons.students')}</div>
     <StudentChecklist bind:students={editableStudents} />
 
     <div class="row">
