@@ -34,6 +34,24 @@
 8. Сохранил.
 9. Нажал «Экспорт в CSV» — и вставил в Яндекс.Таблицы.
 
+примитив: 
+Сценарий:
+
+Открыл приложение.
+
+Выбрал дату (или занятие).
+
+Увидел записи за эту дату: группа, кто был, часы, тема, материалы.
+
+Выделил нужный кусок.
+
+Ctrl+C.
+
+Открыл Яндекс.Таблицы.
+
+Выделил ячейку.
+
+Ctrl+V — данные разложились по ячейкам.
 --- СУЩНОСТИ ---
 
 - Группа — список учеников.
@@ -74,3 +92,51 @@
 ==================================================================
   Обновлено: 29.09.2026
 ==================================================================
+
+
+simple-hot_on_the_heels-notebook/
+├── src/                              # Svelte-фронтенд
+│   ├── lib/
+│   │   ├── i18n/                     # локализация
+│   │   │   ├── index.ts
+│   │   │   └── locales/
+│   │   │       ├── ru.json
+│   │   │       └── en.json
+│   │   ├── stores/                   # состояние
+│   │   │   ├── groups.ts
+│   │   │   ├── lessons.ts
+│   │   │   └── ui.ts
+│   │   ├── components/               # компоненты
+│   │   │   ├── GroupList.svelte
+│   │   │   ├── GroupForm.svelte
+│   │   │   ├── LessonList.svelte
+│   │   │   ├── LessonForm.svelte
+│   │   │   ├── LessonView.svelte
+│   │   │   ├── StudentChecklist.svelte
+│   │   │   ├── LoadingBar.svelte
+│   │   │   └── ConfirmDialog.svelte
+│   │   └── utils/
+│   │       ├── storage.ts            # работа с txt-файлами
+│   │       └── clipboard.ts          # формирование \t/\n
+│   ├── App.svelte                    # главный компонент
+│   ├── main.ts                       # точка входа
+│   └── app.css                       # глобальные стили
+├── src-tauri/                        # Tauri (Rust)
+│   ├── src/
+│   │   └── main.rs
+│   ├── Cargo.toml
+│   └── tauri.conf.json
+├── data/                             # данные пользователя (gitignore)
+│   ├── groups/                       # папки групп
+│   │   ├── Группа_А/
+│   │   │   ├── group.txt             # состав группы
+│   │   │   ├── 2026-06-15.txt        # занятие
+│   │   │   └── 2026-06-17.txt
+│   │   └── Группа_Б/
+│   └── imports/                      # для импорта
+├── package.json
+├── vite.config.ts
+├── tsconfig.json
+├── svelte.config.js
+├── .gitignore
+└── README.md
