@@ -1,3 +1,12 @@
+// ============================================================
+//  lessons.ts — стор занятий
+//  Автор: Ключенко М.А. (Омск, ОмГТУ, БИТ-211)
+// ============================================================
+//  Что делает:
+//    - Хранит список занятий текущей группы.
+//    - Синхронизирует с Rust-ядром через storage.ts.
+// ============================================================
+
 import { writable } from 'svelte/store';
 import type { Lesson } from '../utils/storage';
 import { loadLessons, saveLesson, deleteLesson, deleteLessons } from '../utils/storage';
@@ -12,6 +21,11 @@ export async function addLesson(groupName: string, lesson: Lesson, overwrite: bo
   const id = await saveLesson(groupName, lesson, overwrite);
   await refreshLessons(groupName);
   return id;
+}
+
+export async function updateLesson(groupName: string, lesson: Lesson) {
+  await saveLesson(groupName, lesson, true);
+  await refreshLessons(groupName);
 }
 
 export async function toggleMark(groupName: string, lesson: Lesson) {

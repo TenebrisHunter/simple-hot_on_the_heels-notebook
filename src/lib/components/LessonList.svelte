@@ -1,3 +1,16 @@
+<!--
+  ============================================================
+  LessonList.svelte — список занятий группы
+  Автор: Ключенко М.А. (Омск, ОмГТУ, БИТ-211)
+  ============================================================
+  Что делает:
+    - Показывает занятия выбранной группы.
+    - Открывает просмотр (LessonView) по клику на info.
+    - Открывает редактирование (LessonForm) по кнопке ✏️.
+    - Удаляет одно/несколько занятий.
+    - Переключает маркер "в журнале".
+  ============================================================
+-->
 <script lang="ts">
   import { t } from '../i18n';
   import { lessons, refreshLessons, removeLesson, removeLessons, toggleMark } from '../stores/lessons';
@@ -7,13 +20,25 @@
   import LoadingSpinner from './LoadingSpinner.svelte';
 
   let showForm = false;
+  let editingLesson: any = null;
   let deletingId: string | null = null;
   let deletingBulk = false;
   let togglingId: string | null = null;
 
   $: if ($lessonsGroup) refreshLessons($lessonsGroup);
 
-  function openLesson(lesson: any) { $selectedLesson = lesson; }
+  function openView(lesson: any) { $selectedLesson = lesson; }
+
+  function openEdit(lesson: any, event: MouseEvent) {
+    event.stopPropagation();
+    editingLesson = lesson;
+    showForm = true;
+  }
+
+  function openCreate() {
+    editingLesson = null;
+    showForm = true;
+  }
 
   function toggleSelect(fileId: string) {
     const s = new Set($selectedLessons);
@@ -84,7 +109,7 @@
       {#each $groups as g}<option value={g.name}>{g.name}</option>{/each}
     </select>
     {#if $lessonsGroup}
-      <button class="add" on:click={() => showForm = true}>➕ {$t('lessons.add')}</button>
+      <button class="add" on:click={openCreate}>➕ {$t('lessons.add')}</button>
     {/if}
   </div>
 
@@ -110,9 +135,9 @@
     {#each $lessons as lesson}
       <div class="lesson-item">
         <input type="checkbox" checked={$selectedLessons.has(lesson.file_id || '')} on:change={() => toggleSelect(lesson.file_id || '')} />
-        <div class="info" role="button" tabindex="0" on:click={() => openLesson(lesson)} on:keydown={(e) => e.key === 'Enter' && openLesson(lesson)}>
+        <div class="info" role="button" tabindex="0" on:click={() => openView(lesson)} on:keydown={(e) => e.key === 'Enter' && openView(lesson)}>
           <strong>{lesson.date} {lesson.time}</strong>
-          <span class="topic">{lesson.topic || '—'}</span>
+          <span class="topic">{(lesson.topic || '—').split('\n')[0]}</span>
           <span class="hours">{lesson.hours} ч.</span>
         </div>
 
@@ -124,11 +149,12 @@
           {/if}
         </button>
 
+        <button class="btn edit" on:click={(e) => openEdit(lesson, e)} title="Редактировать">✏️</button>
         <button class="btn delete" on:click={(e) => askDeleteOne(lesson, e)} disabled={deletingId === lesson.file_id} title="Удалить">
           {#if deletingId === lesson.file_id}
             <LoadingSpinner active size={14} color="#d9534f" />
           {:else}
-            🗑️ Удалить
+            🗑️
           {/if}
         </button>
       </div>
@@ -137,7 +163,7 @@
 </div>
 
 {#if showForm && $lessonsGroup}
-  <LessonForm groupName={$lessonsGroup} onClose={() => showForm = false} />
+  <LessonForm groupName={$lessonsGroup} lessonToEdit={editingLesson} onClose={() => { showForm = false; editingLesson = null; }} />
 {/if}
 
 <style>
@@ -149,14 +175,15 @@
   .bulk button.danger { background: #fdecea; color: #d9534f; }
   .bulk button:disabled { opacity: 0.5; cursor: not-allowed; }
   .empty { color: #999; text-align: center; padding: 32px; }
-  .lesson-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 1px solid #eee; border-radius: 6px; margin-bottom: 8px; }
+  .lesson-item { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border: 1px solid #eee; border-radius: 6px; margin-bottom: 8px; }
   .info { flex: 1; cursor: pointer; }
   .topic { color: #666; font-size: 0.85rem; margin-left: 12px; }
   .hours { color: #999; font-size: 0.85rem; margin-left: 12px; }
   .mark-btn { border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; background: #f5f5f5; color: #999; display: inline-flex; align-items: center; gap: 6px; min-width: 110px; justify-content: center; }
   .mark-btn.marked { background: #e8f5e9; color: #2e7d32; }
   .mark-btn:disabled { opacity: 0.7; cursor: wait; }
-  .btn { border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; }
+  .btn { border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 6px; }
+  .btn.edit { background: #eef4fb; color: #4a90d9; }
   .btn.delete { background: #fdecea; color: #d9534f; }
   .btn.delete:disabled { opacity: 0.7; cursor: wait; }
 </style>

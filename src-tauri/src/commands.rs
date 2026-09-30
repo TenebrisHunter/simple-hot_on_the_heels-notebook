@@ -1,7 +1,16 @@
 // ============================================================
-//  commands.rs — Tauri-команды
+//  commands.rs — Tauri-команды (мост между UI и storage.rs)
 //  Автор: Ключенко М.А. (Омск, ОмГТУ, БИТ-211)
 // ============================================================
+//  Что делает:
+//    - Регистрирует публичные команды для вызова из Svelte.
+//    - Каждая команда — тонкая обёртка над storage.rs.
+//  Как добавить новую:
+//    1. Написать функцию в storage.rs.
+//    2. Добавить #[tauri::command] здесь.
+//    3. Зарегистрировать в lib.rs (invoke_handler).
+// ============================================================
+
 use crate::storage::{self, Group, Lesson};
 
 #[tauri::command]
@@ -51,7 +60,6 @@ pub fn delete_trash_group(trash_name: String) -> Result<(), String> { storage::d
 
 #[tauri::command]
 pub fn clean_old_trash() -> Result<(), String> { storage::clean_old_trash() }
+
 #[tauri::command]
-pub fn toggle_mark(group_name: String, lesson: Lesson) -> Result<(), String> {
-    storage::toggle_mark(&group_name, &lesson)
-}
+pub fn toggle_mark(group_name: String, lesson: Lesson) -> Result<(), String> { storage::toggle_mark(&group_name, &lesson) }

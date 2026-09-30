@@ -2,10 +2,21 @@
 //  storage.ts — обёртка над Tauri-командами
 //  Автор: Ключенко М.А. (Омск, ОмГТУ, БИТ-211)
 // ============================================================
+//  Что делает:
+//    - Типы: Student, Group, Lesson.
+//    - Функции для вызова Rust-команд через invoke().
+//    - Все данные хранятся в txt-файлах (см. storage.rs).
+// ============================================================
+
 import { invoke } from '@tauri-apps/api/core';
 
+/** Ученик внутри занятия: имя, присутствие, причина отсутствия. */
 export interface Student { name: string; present: boolean; reason?: string; }
+
+/** Группа: имя, список учеников, часы по умолчанию. */
 export interface Group { name: string; students: string[]; default_hours: number; }
+
+/** Занятие: дата, время, часы, тема, материалы, ученики, маркер. */
 export interface Lesson {
   date: string;
   time: string;

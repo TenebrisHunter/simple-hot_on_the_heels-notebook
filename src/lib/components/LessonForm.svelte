@@ -1,6 +1,17 @@
+<!--
+  ============================================================
+  LessonForm.svelte — форма создания/редактирования занятия
+  Автор: Ключенко М.А. (Омск, ОмГТУ, БИТ-211)
+  ============================================================
+  Что делает:
+    - Создаёт новое занятие ИЛИ редактирует существующее.
+    - Если передан lessonToEdit — режим редактирования.
+    - Иначе — режим создания (часы берутся из группы).
+  ============================================================
+-->
 <script lang="ts">
   import { t } from '../i18n';
-  import { addLesson } from '../stores/lessons';
+  import { addLesson, updateLesson } from '../stores/lessons';
   import { groups } from '../stores/groups';
   import { withMinLoading, confirmMessage, confirmCallback } from '../stores/ui';
   import { lessonExists } from '../utils/storage';
@@ -9,30 +20,42 @@
 
   export let groupName: string;
   export let onClose: () => void;
+  export let lessonToEdit: Lesson | null = null;
 
   const now = new Date();
-  let date = now.toISOString().slice(0, 10);
-  let time = now.toTimeString().slice(0, 8);
-  let topic = '';
-  let materials = '';
-  let marked = false;
+  let date = lessonToEdit?.date || now.toISOString().slice(0, 10);
+  let time = lessonToEdit?.time || now.toTimeString().slice(0, 8);
+  let topic = lessonToEdit?.topic || '';
+  let materials = lessonToEdit?.materials || '';
+  let marked = lessonToEdit?.marked || false;
+  let hours = lessonToEdit?.hours ?? 1;
   let saving = false;
 
   $: group = $groups.find(g => g.name === groupName);
   let editableStudents: Student[] = [];
-  let hours = 1;
 
-  $: if (group && editableStudents.length === 0) {
+  $: if (lessonToEdit && editableStudents.length === 0) {
+    editableStudents = lessonToEdit.students.map(s => ({ ...s }));
+  } else if (group && editableStudents.length === 0) {
     editableStudents = group.students.map((name): Student => ({ name, present: true, reason: '' }));
     hours = group.default_hours ?? 1;
   }
 
   async function doSave(overwrite: boolean) {
     saving = true;
-    const lesson: Lesson = { date, time, hours, topic, materials, students: editableStudents, marked };
+    const lesson: Lesson = {
+      date, time, hours, topic, materials,
+      students: editableStudents,
+      marked,
+      file_id: lessonToEdit?.file_id
+    };
     try {
       await withMinLoading(async () => {
-        await addLesson(groupName, lesson, overwrite);
+        if (lessonToEdit) {
+          await updateLesson(groupName, lesson);
+        } else {
+          await addLesson(groupName, lesson, overwrite);
+        }
       });
     } finally {
       saving = false;
@@ -41,6 +64,10 @@
   }
 
   async function save() {
+    if (lessonToEdit) {
+      await doSave(true);
+      return;
+    }
     const exists = await lessonExists(groupName, date);
     if (exists) {
       $confirmMessage = `В этот день у группы «${groupName}» уже было занятие. Пересохранить?`;
@@ -57,7 +84,7 @@
 
 <div class="overlay">
   <div class="dialog">
-    <h2>{$t('lessons.add')} — {groupName}</h2>
+    <h2>{lessonToEdit ? 'Редактировать занятие' : $t('lessons.add')} — {groupName}</h2>
 
     <div class="label">{$t('lessons.students')}</div>
     <StudentChecklist bind:students={editableStudents} />
@@ -68,8 +95,8 @@
     </div>
 
     <label>{$t('lessons.hours')}<input type="number" step="0.5" bind:value={hours} /></label>
-    <label>{$t('lessons.topic')}<textarea bind:value={topic} rows="3"></textarea></label>
-    <label>{$t('lessons.materials')}<textarea bind:value={materials} rows="2"></textarea></label>
+    <label>{$t('lessons.topic')}<textarea bind:value={topic} rows="4"></textarea></label>
+    <label>{$t('lessons.materials')}<textarea bind:value={materials} rows="3"></textarea></label>
 
     <label class="check">
       <input type="checkbox" bind:checked={marked} />
@@ -89,7 +116,7 @@
   .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 1000; }
   .dialog { background: white; padding: 24px; border-radius: 8px; max-width: 600px; width: 90%; max-height: 85vh; overflow-y: auto; }
   h2 { margin: 0 0 16px; font-size: 1.1rem; }
-  label { display: block; margin-bottom: 12px; font-size: 0.9rem; color: #555; }
+  label, .label { display: block; margin-bottom: 12px; font-size: 0.9rem; color: #555; }
   input, textarea { width: 100%; padding: 8px; margin-top: 4px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-family: inherit; }
   .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .check { display: flex; align-items: center; gap: 8px; cursor: pointer; }
