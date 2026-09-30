@@ -2,6 +2,7 @@
 //  storage.rs — чтение/запись txt-файлов
 //  Автор: Ключенко М.А. (Омск, ОмГТУ, БИТ-211)
 // ============================================================
+
 use std::fs;
 use std::path::{Path, PathBuf};
 use serde::{Deserialize, Serialize};
@@ -286,6 +287,7 @@ fn timestamp() -> u64 {
     std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_secs()
 }
 
+/// Парсит занятие. Поддерживает многострочные поля через маркеры <<< >>>.
 fn parse_lesson(content: &str) -> Result<Lesson, String> {
     let mut date = String::new();
     let mut time = String::new();
@@ -294,13 +296,39 @@ fn parse_lesson(content: &str) -> Result<Lesson, String> {
     let mut materials = String::new();
     let mut marked = false;
     let mut students = vec![];
-    for line in content.lines() {
-        if let Some(v) = line.strip_prefix("Дата: ") { date = v.to_string(); }
-        else if let Some(v) = line.strip_prefix("Время: ") { time = v.to_string(); }
-        else if let Some(v) = line.strip_prefix("Часы: ") { hours = v.parse().unwrap_or(0.0); }
-        else if let Some(v) = line.strip_prefix("Тема: ") { topic = v.to_string(); }
-        else if let Some(v) = line.strip_prefix("Материалы: ") { materials = v.to_string(); }
-        else if let Some(v) = line.strip_prefix("Отмечено: ") { marked = v == "да"; }
+
+    let lines: Vec<&str> = content.lines().collect();
+    let mut i = 0;
+
+    while i < lines.len() {
+        let line = lines[i];
+
+        if let Some(v) = line.strip_prefix("Дата: ") { date = v.to_string(); i += 1; }
+        else if let Some(v) = line.strip_prefix("Время: ") { time = v.to_string(); i += 1; }
+        else if let Some(v) = line.strip_prefix("Часы: ") { hours = v.parse().unwrap_or(0.0); i += 1; }
+        else if let Some(v) = line.strip_prefix("Отмечено: ") { marked = v.trim() == "да"; i += 1; }
+        else if let Some(v) = line.strip_prefix("Тема: <<<") {
+            i += 1;
+            let mut buf = vec![];
+            while i < lines.len() && lines[i].trim() != ">>>" {
+                buf.push(lines[i]);
+                i += 1;
+            }
+            topic = buf.join("\n");
+            i += 1; // пропускаем >>>
+        }
+        else if let Some(v) = line.strip_prefix("Тема: ") { topic = v.to_string(); i += 1; }
+        else if let Some(v) = line.strip_prefix("Материалы: <<<") {
+            i += 1;
+            let mut buf = vec![];
+            while i < lines.len() && lines[i].trim() != ">>>" {
+                buf.push(lines[i]);
+                i += 1;
+            }
+            materials = buf.join("\n");
+            i += 1;
+        }
+        else if let Some(v) = line.strip_prefix("Материалы: ") { materials = v.to_string(); i += 1; }
         else if line.contains('\t') {
             let parts: Vec<&str> = line.split('\t').collect();
             if parts.len() >= 2 {
@@ -310,19 +338,41 @@ fn parse_lesson(content: &str) -> Result<Lesson, String> {
                     reason: parts.get(2).map(|s| s.to_string()),
                 });
             }
+            i += 1;
         }
+        else { i += 1; }
     }
+
     Ok(Lesson { date, time, hours, topic, materials, students, marked, file_id: String::new() })
 }
 
+/// Форматирует занятие. Многострочные поля — через маркеры <<< >>>.
 fn format_lesson(lesson: &Lesson) -> String {
     let mut out = String::new();
     out.push_str(&format!("Дата: {}\n", lesson.date));
     out.push_str(&format!("Время: {}\n", lesson.time));
     out.push_str(&format!("Часы: {}\n", lesson.hours));
-    out.push_str(&format!("Тема: {}\n", lesson.topic));
-    out.push_str(&format!("Материалы: {}\n", lesson.materials));
-    out.push_str(&format!("Отмечено: {}\n\n", if lesson.marked { "да" } else { "нет" }));
+    out.push_str(&format!("Отмечено: {}\n", if lesson.marked { "да" } else { "нет" }));
+
+    // Тема — многострочно
+    if lesson.topic.contains('\n') || lesson.topic.trim().is_empty() {
+        out.push_str("Тема: <<<\n");
+        out.push_str(&lesson.topic);
+        out.push_str("\n>>>\n");
+    } else {
+        out.push_str(&format!("Тема: {}\n", lesson.topic));
+    }
+
+    // Материалы — многострочно
+    if lesson.materials.contains('\n') || lesson.materials.trim().is_empty() {
+        out.push_str("Материалы: <<<\n");
+        out.push_str(&lesson.materials);
+        out.push_str("\n>>>\n");
+    } else {
+        out.push_str(&format!("Материалы: {}\n", lesson.materials));
+    }
+
+    out.push('\n');
     for s in &lesson.students {
         out.push_str(&format!("{}\t{}", s.name, if s.present { "да" } else { "нет" }));
         if let Some(r) = &s.reason { out.push_str(&format!("\t{}", r)); }
