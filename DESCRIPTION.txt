@@ -1,8 +1,16 @@
-Дневник занятий для педагога — быстрая фиксация посещаемости,
-часов, тем и материалов с последующим переносом в Яндекс.Таблицы.
+Дневник занятий — быстрая фиксация того, что было на занятии:
+посещаемости, часов, тем и материалов с последующей возможностью
+перенести в стороннюю таблицу. Например, в Яндекс.Таблицы.
 
-A lesson diary for coaches — quick recording of attendance,
-hours, topics and materials, with easy transfer to Yandex Sheets.
+A lesson diary — quick recording of what happened in a lesson:
+attendance, hours, topics and materials, with the ability to
+transfer them to an external table. For example, to Yandex Sheets.
 
-Автор / Author: Ключенко М.А. (ОмГТУ, БИТ-211)
-Лицензия / License: MIT
+课程日记 —— 快速记录课堂内容：出勤、学时、主题和材料，
+之后可转移到外部表格，例如 Yandex 表格。
+
+Автор / Author / 作者: Ключенко М.А. / Klyuchenko M.A. / 克柳琴科 М.А.
+Организация / Organization / 组织: Омск, ОмГТУ, БИТ-211 / Omsk, OmSTU, BIT-211 / 鄂木斯克，鄂木斯克国立技术大学，БИТ-211
+Лицензия / License / 许可证: MIT
+Версия / Version / 版本: stable&work_1_[v50]
+Дата / Date / 日期: 29.09.2026
