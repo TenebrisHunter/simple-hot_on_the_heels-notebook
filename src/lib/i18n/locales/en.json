@@ -1,29 +1,71 @@
 {
   "app": { "title": "Lesson Diary" },
-  "nav": { "groups": "Groups", "lessons": "Lessons", "import": "Import", "trash": "Trash" },
+  "nav": { "groups": "Groups", "lessons": "Lessons", "import": "Import", "trash": "Trash", "settings": "Settings" },
+  "footer": {
+    "authors": "Lesson Diary · Omsk, OmSTU, BIT-211 · Klyuchenko M.A. · 2026 · stable&work_1_[v50]",
+    "warning": "⚠️ Data is stored locally and in plain text. Enter personal data responsibly."
+  },
   "groups": {
     "title": "Groups", "add": "Add group", "edit": "Edit group", "name": "Group name",
+    "default_hours": "Default hours",
     "students": "Students", "student_name": "Student name",
     "add_student": "Add student", "remove_student": "Remove student",
     "save": "Save", "delete": "Delete group",
     "confirm_delete": "Delete group? It will be moved to trash.",
-    "empty": "No groups yet"
+    "empty": "No groups yet",
+    "students_count": "students"
   },
   "lessons": {
-    "title": "Lessons", "add": "New lesson", "date": "Date", "hours": "Hours",
+    "title": "Lessons", "add": "New lesson", "edit": "Edit lesson",
+    "date": "Date", "time": "Time", "hours": "Hours",
     "topic": "Topic", "materials": "Materials", "students": "Students",
     "present": "Present", "absent": "Absent", "reason": "Reason",
-    "save": "Save", "delete": "Delete lesson",
+    "number": "#", "student": "Student",
+    "in_journal": "In journal", "not_in_journal": "Not in journal",
+    "status": "Journal status",
+    "marked_in_journal": "Marked in journal (transferred to Yandex Sheets)",
+    "save": "Save", "saving": "Saving...", "delete": "Delete lesson",
     "confirm_delete": "Delete lesson? It will be moved to trash.",
+    "confirm_delete_one": "Delete lesson from {date} {time}? It will be moved to trash.",
+    "confirm_delete_selected": "Delete selected entries ({count})? They will be moved to trash.",
+    "confirm_overwrite": "There is already a lesson for group \"{group}\" on this day. Overwrite?",
     "empty": "No lessons yet",
-    "back": "Back", "copy_all": "Copy all",
+    "choose_group": "Choose a group",
+    "back": "Back",
+    "select_all": "Select all", "clear_all": "Clear all",
+    "delete_selected": "Delete selected",
+    "deleting": "Deleting...",
+    "copy_all": "Copy all",
     "copy_students": "Copy students", "copy_topic": "Copy topic",
-    "copy_materials": "Copy materials", "copied": "Copied"
+    "copy_materials": "Copy materials", "copied": "Copied",
+    "edit_btn": "Edit", "delete_btn": "Delete"
   },
   "import": {
     "title": "Import entries", "select_folder": "Select folder",
-    "import": "Import", "success": "Imported files: {count}",
+    "folder": "Folder with txt files", "to_group": "Import to group",
+    "import": "Import", "importing": "Importing...",
+    "success": "Imported files: {count}",
     "error": "Import error"
+  },
+  "trash": {
+    "title": "Trash",
+    "hint": "Entries are kept for 30 days, then deleted automatically.",
+    "tab_lessons": "Lessons", "tab_groups": "Groups",
+    "group": "Group", "choose": "— choose —", "choose_group": "Choose a group",
+    "empty": "Empty", "loading": "Loading...",
+    "restore": "Restore", "delete_forever": "Delete forever",
+    "confirm_delete_lesson": "Delete entry forever?",
+    "confirm_delete_group": "Delete group \"{name}\" forever?"
+  },
+  "settings": {
+    "title": "Settings",
+    "tab_about": "About", "tab_appearance": "Theme", "tab_language": "Language",
+    "version": "Version", "date": "Date", "author": "Author",
+    "organization": "Organization", "license": "License",
+    "theme_title": "Theme",
+    "theme_light": "Light", "theme_dark": "Dark",
+    "lang_title": "Interface language",
+    "lang_ru": "Русский", "lang_en": "English", "lang_zh": "中文 (soon)"
   },
   "common": {
     "save": "Save", "cancel": "Cancel", "delete": "Delete",

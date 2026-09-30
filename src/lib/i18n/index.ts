@@ -1,4 +1,4 @@
-﻿import { writable, derived } from 'svelte/store';
+import { writable, derived } from 'svelte/store';
 import ru from './locales/ru.json';
 import en from './locales/en.json';
 

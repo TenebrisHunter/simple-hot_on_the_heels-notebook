@@ -2,7 +2,7 @@
   ============================================================
   App.svelte — главный компонент
   Автор: Ключенко М.А. (Омск, ОмГТУ, БИТ-211)
-  Версия: stable&work_1_[v35]
+  Версия: stable&work_1_[v50]
   ============================================================
 -->
 <script lang="ts">
@@ -33,7 +33,7 @@
       <button class:active={$view === 'lessons'} on:click={() => $view = 'lessons'}>📚 {$t('nav.lessons')}</button>
       <button class:active={$view === 'import'} on:click={() => $view = 'import'}>📥 {$t('nav.import')}</button>
       <button class:active={$view === 'trash'} on:click={() => $view = 'trash'}>🗑️ {$t('nav.trash')}</button>
-      <button class="settings-btn" on:click={() => showSettings = true} title="Настройки">⚙️</button>
+      <button class="settings-btn" on:click={() => showSettings = true} title={$t('nav.settings')}>⚙️</button>
     </nav>
   </header>
 
@@ -46,8 +46,8 @@
   </section>
 
   <footer>
-    <div class="authors">Дневник занятий · Омск, ОмГТУ, БИТ-211 · Ключенко М.А. · 2026 · stable&work_1_[v35]</div>
-    <div class="warning">⚠️ Данные хранятся локально и в открытом виде. Вносите персональные данные осознанно.</div>
+    <div class="authors">{$t('footer.authors')}</div>
+    <div class="warning">{$t('footer.warning')}</div>
   </footer>
 </main>
 

@@ -1,3 +1,9 @@
+<!--
+  ============================================================
+  ImportView.svelte — импорт txt-файлов
+  Автор: Ключенко М.А. (Омск, ОмГТУ, БИТ-211)
+  ============================================================
+-->
 <script lang="ts">
   import { onMount } from 'svelte';
   import { t } from '../i18n';
@@ -36,21 +42,21 @@
   <h2>📥 {$t('import.title')}</h2>
 
   <label>
-    Папка с txt-файлами:
+    {$t('import.folder')}:
     <button class="folder-btn" on:click={selectFolder}>📁 {$t('import.select_folder')}</button>
     {#if folderPath}<span class="path">{folderPath}</span>{/if}
   </label>
 
   <label>
-    В какую группу импортировать:
+    {$t('import.to_group')}:
     <select bind:value={groupName}>
-      <option value="">— выбери группу —</option>
+      <option value="">{$t('trash.choose')}</option>
       {#each $groups as g}<option value={g.name}>{g.name}</option>{/each}
     </select>
   </label>
 
   <button class="import-btn" on:click={doImport} disabled={importing || !folderPath || !groupName}>
-    {#if importing}<span class="loader"></span> Импорт...{:else}📥 {$t('import.import')}{/if}
+    {#if importing}<span class="loader"></span> {$t('import.importing')}{:else}📥 {$t('import.import')}{/if}
   </button>
 
   {#if message}<p class="message">{message}</p>{/if}

@@ -1,3 +1,9 @@
+<!--
+  ============================================================
+  TrashView.svelte — корзина (занятия + группы)
+  Автор: Ключенко М.А. (Омск, ОмГТУ, БИТ-211)
+  ============================================================
+-->
 <script lang="ts">
   import { t } from '../i18n';
   import { groups, refreshGroups } from '../stores/groups';
@@ -57,7 +63,7 @@
   }
 
   function askDeleteL(fileId: string) {
-    $confirmMessage = `Удалить запись навсегда?`;
+    $confirmMessage = $t('trash.confirm_delete_lesson');
     $confirmCallback = async () => {
       $confirmMessage = null;
       $confirmCallback = null;
@@ -74,7 +80,7 @@
   }
 
   function askDeleteG(trashName: string) {
-    $confirmMessage = `Удалить группу «${cleanGroupName(trashName)}» навсегда?`;
+    $confirmMessage = $t('trash.confirm_delete_group', { name: cleanGroupName(trashName) });
     $confirmCallback = async () => {
       $confirmMessage = null;
       $confirmCallback = null;
@@ -98,54 +104,54 @@
 </script>
 
 <div class="trash-view">
-  <h2>🗑️ Корзина</h2>
-  <p class="hint">Записи хранятся 30 дней, потом удаляются автоматически.</p>
+  <h2>🗑️ {$t('trash.title')}</h2>
+  <p class="hint">{$t('trash.hint')}</p>
 
   <div class="tabs">
-    <button class:active={tab === 'lessons'} on:click={() => tab = 'lessons'}>📚 Занятия</button>
-    <button class:active={tab === 'groups'} on:click={() => tab = 'groups'}>👥 Группы</button>
+    <button class:active={tab === 'lessons'} on:click={() => tab = 'lessons'}>📚 {$t('trash.tab_lessons')}</button>
+    <button class:active={tab === 'groups'} on:click={() => tab = 'groups'}>👥 {$t('trash.tab_groups')}</button>
   </div>
 
   {#if tab === 'lessons'}
     <label>
-      Группа:
+      {$t('trash.group')}:
       <select bind:value={trashGroup}>
-        <option value="">— выбери —</option>
+        <option value="">{$t('trash.choose')}</option>
         {#each $groups as g}<option value={g.name}>{g.name}</option>{/each}
       </select>
     </label>
 
-    {#if loading}<p>Загрузка...</p>
-    {:else if !trashGroup}<p class="empty">Выбери группу</p>
-    {:else if lessonsFiles.length === 0}<p class="empty">Пусто</p>
+    {#if loading}<p>{$t('trash.loading')}</p>
+    {:else if !trashGroup}<p class="empty">{$t('trash.choose_group')}</p>
+    {:else if lessonsFiles.length === 0}<p class="empty">{$t('trash.empty')}</p>
     {:else}
       {#each lessonsFiles as file}
         <div class="item">
           <span>{file}</span>
           <div class="actions">
             <button class="restore" on:click={() => restoreL(file)} disabled={busyId === file}>
-              {#if busyId === file}<LoadingSpinner active size={14} color="#2e7d32" />{:else}↩️ Восстановить{/if}
+              {#if busyId === file}<LoadingSpinner active size={14} color="#2e7d32" />{:else}↩️ {$t('trash.restore')}{/if}
             </button>
             <button class="delete" on:click={() => askDeleteL(file)} disabled={busyId === file}>
-              {#if busyId === file}<LoadingSpinner active size={14} color="#d9534f" />{:else}🗑️ Удалить навсегда{/if}
+              {#if busyId === file}<LoadingSpinner active size={14} color="#d9534f" />{:else}🗑️ {$t('trash.delete_forever')}{/if}
             </button>
           </div>
         </div>
       {/each}
     {/if}
   {:else}
-    {#if loading}<p>Загрузка...</p>
-    {:else if groupsFiles.length === 0}<p class="empty">Пусто</p>
+    {#if loading}<p>{$t('trash.loading')}</p>
+    {:else if groupsFiles.length === 0}<p class="empty">{$t('trash.empty')}</p>
     {:else}
       {#each groupsFiles as file}
         <div class="item">
           <span>{cleanGroupName(file)}</span>
           <div class="actions">
             <button class="restore" on:click={() => restoreG(file)} disabled={busyId === file}>
-              {#if busyId === file}<LoadingSpinner active size={14} color="#2e7d32" />{:else}↩️ Восстановить{/if}
+              {#if busyId === file}<LoadingSpinner active size={14} color="#2e7d32" />{:else}↩️ {$t('trash.restore')}{/if}
             </button>
             <button class="delete" on:click={() => askDeleteG(file)} disabled={busyId === file}>
-              {#if busyId === file}<LoadingSpinner active size={14} color="#d9534f" />{:else}🗑️ Удалить навсегда{/if}
+              {#if busyId === file}<LoadingSpinner active size={14} color="#d9534f" />{:else}🗑️ {$t('trash.delete_forever')}{/if}
             </button>
           </div>
         </div>
@@ -166,7 +172,7 @@
   .empty { color: #999; text-align: center; padding: 32px; }
   .item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border: 1px solid #eee; border-radius: 6px; margin-bottom: 8px; }
   .actions { display: flex; gap: 8px; }
-  .restore, .delete { border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; min-width: 150px; justify-content: center; }
+  .restore, .delete { border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; min-width: 160px; justify-content: center; }
   .restore { background: #e8f5e9; color: #2e7d32; }
   .delete { background: #fdecea; color: #d9534f; }
   .restore:disabled, .delete:disabled { opacity: 0.7; cursor: wait; }

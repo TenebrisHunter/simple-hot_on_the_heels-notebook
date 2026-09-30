@@ -3,13 +3,6 @@
   LessonList.svelte — список занятий группы
   Автор: Ключенко М.А. (Омск, ОмГТУ, БИТ-211)
   ============================================================
-  Что делает:
-    - Показывает занятия выбранной группы.
-    - Открывает просмотр (LessonView) по клику на info.
-    - Открывает редактирование (LessonForm) по кнопке ✏️.
-    - Удаляет одно/несколько занятий.
-    - Переключает маркер "в журнале".
-  ============================================================
 -->
 <script lang="ts">
   import { t } from '../i18n';
@@ -64,7 +57,7 @@
 
   function askDeleteOne(lesson: any, event: MouseEvent) {
     event.stopPropagation();
-    $confirmMessage = `Удалить занятие от ${lesson.date} ${lesson.time}? Оно попадёт в корзину.`;
+    $confirmMessage = $t('lessons.confirm_delete_one', { date: lesson.date, time: lesson.time });
     $confirmCallback = async () => {
       $confirmMessage = null;
       $confirmCallback = null;
@@ -83,7 +76,7 @@
   function askDeleteSelected() {
     if ($selectedLessons.size === 0) return;
     const count = $selectedLessons.size;
-    $confirmMessage = `Удалить выбранные записи (${count})? Они попадут в корзину.`;
+    $confirmMessage = $t('lessons.confirm_delete_selected', { count });
     $confirmCallback = async () => {
       $confirmMessage = null;
       $confirmCallback = null;
@@ -105,7 +98,7 @@
   <div class="header">
     <button class="back" on:click={() => { $view = 'groups'; $lessonsGroup = null; }}>← {$t('lessons.back')}</button>
     <select bind:value={$lessonsGroup}>
-      <option value={null}>— выбери группу —</option>
+      <option value={null}>{$t('trash.choose')}</option>
       {#each $groups as g}<option value={g.name}>{g.name}</option>{/each}
     </select>
     {#if $lessonsGroup}
@@ -115,20 +108,20 @@
 
   {#if $lessonsGroup && $lessons.length > 0}
     <div class="bulk">
-      <button on:click={selectAll}>✅ Выбрать все</button>
-      <button on:click={clearAll}>🔄 Снять все</button>
+      <button on:click={selectAll}>✅ {$t('lessons.select_all')}</button>
+      <button on:click={clearAll}>🔄 {$t('lessons.clear_all')}</button>
       <button class="danger" on:click={askDeleteSelected} disabled={$selectedLessons.size === 0 || deletingBulk}>
         {#if deletingBulk}
-          <LoadingSpinner active size={14} color="#d9534f" /> Удаление...
+          <LoadingSpinner active size={14} color="#d9534f" /> {$t('lessons.deleting')}
         {:else}
-          🗑️ Удалить выбранные ({$selectedLessons.size})
+          🗑️ {$t('lessons.delete_selected')} ({$selectedLessons.size})
         {/if}
       </button>
     </div>
   {/if}
 
   {#if !$lessonsGroup}
-    <p class="empty">Выбери группу</p>
+    <p class="empty">{$t('lessons.choose_group')}</p>
   {:else if $lessons.length === 0}
     <p class="empty">{$t('lessons.empty')}</p>
   {:else}
@@ -138,19 +131,19 @@
         <div class="info" role="button" tabindex="0" on:click={() => openView(lesson)} on:keydown={(e) => e.key === 'Enter' && openView(lesson)}>
           <strong>{lesson.date} {lesson.time}</strong>
           <span class="topic">{(lesson.topic || '—').split('\n')[0]}</span>
-          <span class="hours">{lesson.hours} ч.</span>
+          <span class="hours">{lesson.hours} {$t('lessons.hours').toLowerCase()}</span>
         </div>
 
         <button class="mark-btn" class:marked={lesson.marked} on:click={(e) => onToggleMark(lesson, e)} disabled={togglingId === lesson.file_id}>
           {#if togglingId === lesson.file_id}
             <LoadingSpinner active size={12} color="#4a90d9" />
           {:else}
-            {lesson.marked ? '✓ В журнале' : '○ Не в журнале'}
+            {lesson.marked ? '✓ ' + $t('lessons.in_journal') : '○ ' + $t('lessons.not_in_journal')}
           {/if}
         </button>
 
-        <button class="btn edit" on:click={(e) => openEdit(lesson, e)} title="Редактировать">✏️</button>
-        <button class="btn delete" on:click={(e) => askDeleteOne(lesson, e)} disabled={deletingId === lesson.file_id} title="Удалить">
+        <button class="btn edit" on:click={(e) => openEdit(lesson, e)} title={$t('common.edit')}>✏️</button>
+        <button class="btn delete" on:click={(e) => askDeleteOne(lesson, e)} disabled={deletingId === lesson.file_id} title={$t('common.delete')}>
           {#if deletingId === lesson.file_id}
             <LoadingSpinner active size={14} color="#d9534f" />
           {:else}
@@ -175,11 +168,11 @@
   .bulk button.danger { background: #fdecea; color: #d9534f; }
   .bulk button:disabled { opacity: 0.5; cursor: not-allowed; }
   .empty { color: #999; text-align: center; padding: 32px; }
-  .lesson-item { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border: 1px solid #eee; border-radius: 6px; margin-bottom: 8px; }
+  .lesson-item { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border: 1px solid var(--border, #eee); border-radius: 6px; margin-bottom: 8px; }
   .info { flex: 1; cursor: pointer; }
   .topic { color: #666; font-size: 0.85rem; margin-left: 12px; }
   .hours { color: #999; font-size: 0.85rem; margin-left: 12px; }
-  .mark-btn { border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; background: #f5f5f5; color: #999; display: inline-flex; align-items: center; gap: 6px; min-width: 110px; justify-content: center; }
+  .mark-btn { border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; background: #f5f5f5; color: #999; display: inline-flex; align-items: center; gap: 6px; min-width: 120px; justify-content: center; }
   .mark-btn.marked { background: #e8f5e9; color: #2e7d32; }
   .mark-btn:disabled { opacity: 0.7; cursor: wait; }
   .btn { border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 6px; }

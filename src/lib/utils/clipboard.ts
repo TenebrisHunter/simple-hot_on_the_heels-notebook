@@ -1,4 +1,4 @@
-﻿import type { Lesson } from './storage';
+import type { Lesson } from './storage';
 
 /// Формирует HTML-таблицу для вставки в Яндекс.Таблицы
 export function copyAllAsHtml(lesson: Lesson): string {

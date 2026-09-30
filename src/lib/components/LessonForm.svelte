@@ -3,11 +3,6 @@
   LessonForm.svelte — форма создания/редактирования занятия
   Автор: Ключенко М.А. (Омск, ОмГТУ, БИТ-211)
   ============================================================
-  Что делает:
-    - Создаёт новое занятие ИЛИ редактирует существующее.
-    - Если передан lessonToEdit — режим редактирования.
-    - Иначе — режим создания (часы берутся из группы).
-  ============================================================
 -->
 <script lang="ts">
   import { t } from '../i18n';
@@ -51,11 +46,8 @@
     };
     try {
       await withMinLoading(async () => {
-        if (lessonToEdit) {
-          await updateLesson(groupName, lesson);
-        } else {
-          await addLesson(groupName, lesson, overwrite);
-        }
+        if (lessonToEdit) await updateLesson(groupName, lesson);
+        else await addLesson(groupName, lesson, overwrite);
       });
     } finally {
       saving = false;
@@ -64,13 +56,10 @@
   }
 
   async function save() {
-    if (lessonToEdit) {
-      await doSave(true);
-      return;
-    }
+    if (lessonToEdit) { await doSave(true); return; }
     const exists = await lessonExists(groupName, date);
     if (exists) {
-      $confirmMessage = `В этот день у группы «${groupName}» уже было занятие. Пересохранить?`;
+      $confirmMessage = $t('lessons.confirm_overwrite', { group: groupName });
       $confirmCallback = () => {
         $confirmMessage = null;
         $confirmCallback = null;
@@ -84,14 +73,14 @@
 
 <div class="overlay">
   <div class="dialog">
-    <h2>{lessonToEdit ? 'Редактировать занятие' : $t('lessons.add')} — {groupName}</h2>
+    <h2>{lessonToEdit ? $t('lessons.edit') : $t('lessons.add')} — {groupName}</h2>
 
     <div class="label">{$t('lessons.students')}</div>
     <StudentChecklist bind:students={editableStudents} />
 
     <div class="row">
       <label>{$t('lessons.date')}<input type="date" bind:value={date} /></label>
-      <label>Время<input type="time" step="1" bind:value={time} /></label>
+      <label>{$t('lessons.time')}<input type="time" step="1" bind:value={time} /></label>
     </div>
 
     <label>{$t('lessons.hours')}<input type="number" step="0.5" bind:value={hours} /></label>
@@ -100,13 +89,13 @@
 
     <label class="check">
       <input type="checkbox" bind:checked={marked} />
-      Отмечено в журнале (перенесено в Яндекс.Таблицу)
+      {$t('lessons.marked_in_journal')}
     </label>
 
     <div class="buttons">
       <button class="cancel" on:click={onClose}>{$t('common.cancel')}</button>
       <button class="save" on:click={save} disabled={saving}>
-        {#if saving}<span class="loader"></span> Сохранение...{:else}💾 {$t('common.save')}{/if}
+        {#if saving}<span class="loader"></span> {$t('common.loading')}{:else}💾 {$t('common.save')}{/if}
       </button>
     </div>
   </div>
@@ -114,7 +103,7 @@
 
 <style>
   .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-  .dialog { background: white; padding: 24px; border-radius: 8px; max-width: 600px; width: 90%; max-height: 85vh; overflow-y: auto; }
+  .dialog { background: var(--bg-card, white); color: var(--text, #333); padding: 24px; border-radius: 8px; max-width: 600px; width: 90%; max-height: 85vh; overflow-y: auto; }
   h2 { margin: 0 0 16px; font-size: 1.1rem; }
   label, .label { display: block; margin-bottom: 12px; font-size: 0.9rem; color: #555; }
   input, textarea { width: 100%; padding: 8px; margin-top: 4px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-family: inherit; }

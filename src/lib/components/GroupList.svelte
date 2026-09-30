@@ -1,3 +1,9 @@
+<!--
+  ============================================================
+  GroupList.svelte — список групп
+  Автор: Ключенко М.А. (Омск, ОмГТУ, БИТ-211)
+  ============================================================
+-->
 <script lang="ts">
   import { onMount } from 'svelte';
   import { t } from '../i18n';
@@ -44,11 +50,11 @@
       <div class="group-item">
         <div class="info">
           <strong>{group.name}</strong>
-          <span class="count">{group.students.length} чел.</span>
+          <span class="count">{group.students.length} {$t('groups.students_count')} · {group.default_hours} ч.</span>
         </div>
         <div class="actions">
-          <button class="btn edit" on:click={() => openEdit(group)}>✏️ Редактировать</button>
-          <button class="btn delete" on:click={(e) => askDelete(group.name, e)}>🗑️ Удалить</button>
+          <button class="btn edit" on:click={() => openEdit(group)}>✏️ {$t('common.edit')}</button>
+          <button class="btn delete" on:click={(e) => askDelete(group.name, e)}>🗑️ {$t('common.delete')}</button>
         </div>
       </div>
     {/each}
@@ -64,11 +70,11 @@
   h2 { margin: 0; font-size: 1.1rem; }
   .add { background: #4a90d9; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 0.9rem; }
   .empty { color: #999; text-align: center; padding: 32px; }
-  .group-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border: 1px solid #eee; border-radius: 6px; margin-bottom: 8px; }
+  .group-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border: 1px solid var(--border, #eee); border-radius: 6px; margin-bottom: 8px; }
   .info { flex: 1; }
   .count { color: #999; font-size: 0.85rem; margin-left: 12px; }
   .actions { display: flex; gap: 8px; }
   .btn { border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
-  .btn.edit { background: #eee; color: #333; }
+  .btn.edit { background: #eef4fb; color: #4a90d9; }
   .btn.delete { background: #fdecea; color: #d9534f; }
 </style>

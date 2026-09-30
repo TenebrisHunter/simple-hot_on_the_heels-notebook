@@ -5,7 +5,7 @@
 
 Author: Klyuchenko M.A.
 Omsk, OmSTU, BIT-211, ANO TSO DO "Makhaon"
-Version: stable&work_1_[v35]
+Version: stable&work_1_[v50]
 Date: 29.09.2026
 
 ============================================================

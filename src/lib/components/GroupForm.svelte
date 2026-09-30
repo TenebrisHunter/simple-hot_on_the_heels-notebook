@@ -1,3 +1,9 @@
+<!--
+  ============================================================
+  GroupForm.svelte — форма создания/редактирования группы
+  Автор: Ключенко М.А. (Омск, ОмГТУ, БИТ-211)
+  ============================================================
+-->
 <script lang="ts">
   import { t } from '../i18n';
   import { addGroup, updateGroup } from '../stores/groups';
@@ -37,7 +43,7 @@
 
 <div class="overlay">
   <div class="dialog">
-    <h2>{editGroup ? 'Редактировать группу' : $t('groups.add')}</h2>
+    <h2>{editGroup ? $t('groups.edit') : $t('groups.add')}</h2>
 
     <label>
       {$t('groups.name')}
@@ -45,7 +51,7 @@
     </label>
 
     <label>
-      Часы по умолчанию
+      {$t('groups.default_hours')}
       <input type="number" step="0.5" bind:value={defaultHours} min="0" />
     </label>
 
@@ -61,7 +67,7 @@
     <div class="buttons">
       <button class="cancel" on:click={onClose}>{$t('common.cancel')}</button>
       <button class="save" on:click={save} disabled={saving}>
-        {#if saving}<span class="loader"></span> Сохранение...{:else}💾 {$t('common.save')}{/if}
+        {#if saving}<span class="loader"></span> {$t('common.loading')}{:else}💾 {$t('common.save')}{/if}
       </button>
     </div>
   </div>
@@ -69,9 +75,9 @@
 
 <style>
   .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-  .dialog { background: white; padding: 24px; border-radius: 8px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; }
+  .dialog { background: var(--bg-card, white); color: var(--text, #333); padding: 24px; border-radius: 8px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; }
   h2 { margin: 0 0 16px; font-size: 1.1rem; }
-  label { display: block; margin-bottom: 12px; font-size: 0.9rem; color: #555; }
+  label, .label { display: block; margin-bottom: 12px; font-size: 0.9rem; color: #555; }
   input { width: 100%; padding: 8px; margin-top: 4px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
   .student-row { display: flex; gap: 4px; margin-bottom: 4px; }
   .remove { background: #fdecea; color: #d9534f; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
