@@ -1,0 +1,75 @@
+{
+  "app": { "title": "课程日记" },
+  "nav": { "groups": "小组", "lessons": "课程", "import": "导入", "trash": "回收站", "settings": "设置" },
+  "footer": {
+    "authors": "课程日记 · 鄂木斯克, 鄂木斯克国立技术大学, БИТ-211 · 克柳琴科 М.А. · 2026 · stable&work_1_[v50]",
+    "warning": "⚠️ 数据本地存储，明文保存。请谨慎录入个人数据。"
+  },
+  "groups": {
+    "title": "小组", "add": "添加小组", "edit": "编辑小组", "name": "小组名称",
+    "default_hours": "默认学时",
+    "students": "学生名单", "student_name": "学生姓名",
+    "add_student": "添加学生", "remove_student": "删除学生",
+    "save": "保存", "delete": "删除小组",
+    "confirm_delete": "删除小组？将移入回收站。",
+    "empty": "暂无小组",
+    "students_count": "人"
+  },
+  "lessons": {
+    "title": "课程", "add": "新建课程", "edit": "编辑课程",
+    "date": "日期", "time": "时间", "hours": "学时",
+    "topic": "主题", "materials": "材料", "students": "学生",
+    "present": "出席", "absent": "缺席", "reason": "原因",
+    "number": "序号", "student": "学生",
+    "in_journal": "已录入", "not_in_journal": "未录入",
+    "status": "日志状态",
+    "marked_in_journal": "已录入日志（已转移到 Yandex 表格）",
+    "save": "保存", "saving": "保存中...", "delete": "删除课程",
+    "confirm_delete": "删除课程？将移入回收站。",
+    "confirm_delete_one": "删除 {date} {time} 的课程？将移入回收站。",
+    "confirm_delete_selected": "删除选中的 {count} 条记录？将移入回收站。",
+    "confirm_overwrite": "小组「{group}」当天已有课程。是否覆盖？",
+    "empty": "暂无课程",
+    "choose_group": "请选择小组",
+    "back": "返回",
+    "select_all": "全选", "clear_all": "取消全选",
+    "delete_selected": "删除选中",
+    "deleting": "删除中...",
+    "copy_all": "复制全部",
+    "copy_students": "复制学生", "copy_topic": "复制主题",
+    "copy_materials": "复制材料", "copied": "已复制",
+    "edit_btn": "编辑", "delete_btn": "删除"
+  },
+  "import": {
+    "title": "导入记录", "select_folder": "选择文件夹",
+    "folder": "含 txt 文件的文件夹", "to_group": "导入到小组",
+    "import": "导入", "importing": "导入中...",
+    "success": "已导入文件：{count}",
+    "error": "导入错误"
+  },
+  "trash": {
+    "title": "回收站",
+    "hint": "记录保存 30 天，之后自动删除。",
+    "tab_lessons": "课程", "tab_groups": "小组",
+    "group": "小组", "choose": "— 请选择 —", "choose_group": "请选择小组",
+    "empty": "空", "loading": "加载中...",
+    "restore": "恢复", "delete_forever": "永久删除",
+    "confirm_delete_lesson": "永久删除记录？",
+    "confirm_delete_group": "永久删除小组「{name}」？"
+  },
+  "settings": {
+    "title": "设置",
+    "tab_about": "关于", "tab_appearance": "主题", "tab_language": "语言",
+    "version": "版本", "date": "日期", "author": "作者",
+    "organization": "组织", "license": "许可证",
+    "theme_title": "界面主题",
+    "theme_light": "浅色", "theme_dark": "深色",
+    "lang_title": "界面语言",
+    "lang_ru": "Русский", "lang_en": "English", "lang_zh": "中文"
+  },
+  "common": {
+    "save": "保存", "cancel": "取消", "delete": "删除",
+    "edit": "编辑", "close": "关闭", "loading": "加载中...",
+    "yes": "是", "no": "否", "confirm": "确认"
+  }
+}

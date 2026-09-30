@@ -26,15 +26,8 @@
     };
   }
 
-  function openEdit(group: any) {
-    editGroup = group;
-    showForm = true;
-  }
-
-  function openCreate() {
-    editGroup = null;
-    showForm = true;
-  }
+  function openEdit(group: any) { editGroup = group; showForm = true; }
+  function openCreate() { editGroup = null; showForm = true; }
 </script>
 
 <div class="group-list">
@@ -67,14 +60,15 @@
 
 <style>
   .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-  h2 { margin: 0; font-size: 1.1rem; }
-  .add { background: #4a90d9; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 0.9rem; }
-  .empty { color: #999; text-align: center; padding: 32px; }
-  .group-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border: 1px solid var(--border, #eee); border-radius: 6px; margin-bottom: 8px; }
+  h2 { margin: 0; font-size: 1.1rem; color: var(--text); }
+  .add { background: var(--accent); color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 0.9rem; }
+  .add:hover { background: var(--accent-hover); }
+  .empty { color: var(--text-muted); text-align: center; padding: 32px; }
+  .group-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border: 1px solid var(--border); background: var(--bg-card); border-radius: 6px; margin-bottom: 8px; }
   .info { flex: 1; }
-  .count { color: #999; font-size: 0.85rem; margin-left: 12px; }
+  .count { color: var(--text-muted); font-size: 0.85rem; margin-left: 12px; }
   .actions { display: flex; gap: 8px; }
   .btn { border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
-  .btn.edit { background: #eef4fb; color: #4a90d9; }
-  .btn.delete { background: #fdecea; color: #d9534f; }
+  .btn.edit { background: var(--accent-light); color: var(--accent); }
+  .btn.delete { background: var(--danger-light); color: var(--danger); }
 </style>

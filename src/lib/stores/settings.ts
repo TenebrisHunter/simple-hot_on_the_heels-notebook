@@ -2,11 +2,6 @@
 //  settings.ts — пользовательские настройки
 //  Автор: Ключенко М.А. (Омск, ОмГТУ, БИТ-211)
 // ============================================================
-//  Что хранит:
-//    - theme         — 'light' | 'dark'
-//    - locale        — 'ru' | 'en'
-//  Сохраняется в localStorage, применяется автоматически.
-// ============================================================
 
 import { writable } from 'svelte/store';
 
@@ -19,13 +14,11 @@ function loadFromStorage<T extends string>(key: string, fallback: T): T {
 }
 
 export const theme = writable<'light' | 'dark'>(loadFromStorage(KEY_THEME, 'light'));
-export const locale = writable<'ru' | 'en'>(loadFromStorage(KEY_LOCALE, 'ru'));
+export const locale = writable<'ru' | 'en' | 'zh'>(loadFromStorage(KEY_LOCALE, 'ru'));
 
 theme.subscribe(value => {
   if (typeof localStorage !== 'undefined') localStorage.setItem(KEY_THEME, value);
-  if (typeof document !== 'undefined') {
-    document.documentElement.setAttribute('data-theme', value);
-  }
+  if (typeof document !== 'undefined') document.documentElement.setAttribute('data-theme', value);
 });
 
 locale.subscribe(value => {

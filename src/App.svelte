@@ -63,19 +63,47 @@
 
 <style>
   :global(:root) {
+    /* Светлая тема */
     --bg: #fafafa;
     --bg-card: #ffffff;
+    --bg-hover: #f5f7fa;
+    --bg-input: #ffffff;
+    --bg-muted: #f5f5f5;
     --text: #333333;
+    --text-secondary: #555555;
     --text-muted: #999999;
     --border: #eeeeee;
+    --border-input: #cccccc;
+    --accent: #4a90d9;
+    --accent-hover: #3a7bc0;
+    --accent-light: #eef4fb;
+    --danger: #d9534f;
+    --danger-light: #fdecea;
+    --success: #2e7d32;
+    --success-light: #e8f5e9;
+    --warning: #b8860b;
   }
 
   :global(:root[data-theme="dark"]) {
+    /* Тёмная тема */
     --bg: #1a1a1a;
     --bg-card: #2a2a2a;
+    --bg-hover: #333333;
+    --bg-input: #333333;
+    --bg-muted: #333333;
     --text: #e0e0e0;
+    --text-secondary: #b0b0b0;
     --text-muted: #888888;
     --border: #3a3a3a;
+    --border-input: #4a4a4a;
+    --accent: #5ba0e3;
+    --accent-hover: #4a90d9;
+    --accent-light: #2a3a4a;
+    --danger: #e57373;
+    --danger-light: #3a2222;
+    --success: #66bb6a;
+    --success-light: #223322;
+    --warning: #d4a017;
   }
 
   :global(body) {
@@ -86,12 +114,18 @@
     transition: background 0.2s, color 0.2s;
   }
 
+  :global(input), :global(select), :global(textarea) {
+    background: var(--bg-input);
+    color: var(--text);
+    border-color: var(--border-input);
+  }
+
   main { max-width: 900px; margin: 0 auto; padding: 16px; display: flex; flex-direction: column; min-height: 100vh; box-sizing: border-box; }
   header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
   h1 { font-size: 1.2rem; margin: 0; }
   nav { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
   nav button { background: none; border: none; padding: 6px 12px; cursor: pointer; border-radius: 4px; font-size: 0.9rem; color: var(--text); }
-  nav button.active { background: #4a90d9; color: white; }
+  nav button.active { background: var(--accent); color: white; }
   nav button.settings-btn { font-size: 1.2rem; padding: 6px 10px; }
   section { flex: 1; }
   footer {
@@ -103,5 +137,5 @@
     font-size: 0.8rem;
   }
   footer .authors { margin-bottom: 4px; }
-  footer .warning { color: #b8860b; font-size: 0.75rem; }
+  footer .warning { color: var(--warning); font-size: 0.75rem; }
 </style>

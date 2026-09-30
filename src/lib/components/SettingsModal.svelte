@@ -12,7 +12,7 @@
 
   let tab: 'about' | 'appearance' | 'language' = 'about';
 
-  function setLocale(l: 'ru' | 'en') {
+  function setLocale(l: 'ru' | 'en' | 'zh') {
     locale.set(l);
     currentLocale.set(l);
   }
@@ -63,8 +63,8 @@
             <input type="radio" checked={$locale === 'en'} on:change={() => setLocale('en')} />
             🇬🇧 {$t('settings.lang_en')}
           </label>
-          <label class="radio disabled">
-            <input type="radio" disabled />
+          <label class="radio">
+            <input type="radio" checked={$locale === 'zh'} on:change={() => setLocale('zh')} />
             🇨🇳 {$t('settings.lang_zh')}
           </label>
         </div>
@@ -75,18 +75,17 @@
 
 <style>
   .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 1200; }
-  .dialog { background: var(--bg-card, white); color: var(--text, #333); padding: 24px; border-radius: 8px; max-width: 600px; width: 90%; max-height: 85vh; display: flex; flex-direction: column; }
+  .dialog { background: var(--bg-card); color: var(--text); padding: 24px; border-radius: 8px; max-width: 600px; width: 90%; max-height: 85vh; display: flex; flex-direction: column; }
   .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-  h2 { margin: 0; font-size: 1.2rem; }
-  h3 { margin: 0 0 12px; font-size: 1rem; }
-  p { margin: 4px 0; font-size: 0.9rem; }
-  .tabs { display: flex; gap: 6px; margin-bottom: 16px; border-bottom: 1px solid var(--border, #eee); padding-bottom: 8px; }
-  .tabs button { background: none; border: none; padding: 8px 12px; cursor: pointer; border-radius: 4px; font-size: 0.9rem; color: var(--text, #555); }
-  .tabs button.active { background: #4a90d9; color: white; }
+  h2 { margin: 0; font-size: 1.2rem; color: var(--text); }
+  h3 { margin: 0 0 12px; font-size: 1rem; color: var(--text); }
+  p { margin: 4px 0; font-size: 0.9rem; color: var(--text-secondary); }
+  .tabs { display: flex; gap: 6px; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+  .tabs button { background: none; border: none; padding: 8px 12px; cursor: pointer; border-radius: 4px; font-size: 0.9rem; color: var(--text-secondary); }
+  .tabs button.active { background: var(--accent); color: white; }
   .content { overflow-y: auto; flex: 1; }
   .radio-group { display: flex; flex-direction: column; gap: 8px; }
-  .radio { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px; border-radius: 4px; font-size: 0.95rem; }
-  .radio:hover { background: rgba(74,144,217,0.08); }
-  .radio.disabled { opacity: 0.5; cursor: not-allowed; }
-  .close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text, #333); }
+  .radio { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px; border-radius: 4px; font-size: 0.95rem; color: var(--text); }
+  .radio:hover { background: var(--bg-hover); }
+  .close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text); }
 </style>

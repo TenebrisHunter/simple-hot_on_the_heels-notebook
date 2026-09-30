@@ -21,17 +21,8 @@
   $: if ($lessonsGroup) refreshLessons($lessonsGroup);
 
   function openView(lesson: any) { $selectedLesson = lesson; }
-
-  function openEdit(lesson: any, event: MouseEvent) {
-    event.stopPropagation();
-    editingLesson = lesson;
-    showForm = true;
-  }
-
-  function openCreate() {
-    editingLesson = null;
-    showForm = true;
-  }
+  function openEdit(lesson: any, event: MouseEvent) { event.stopPropagation(); editingLesson = lesson; showForm = true; }
+  function openCreate() { editingLesson = null; showForm = true; }
 
   function toggleSelect(fileId: string) {
     const s = new Set($selectedLessons);
@@ -46,30 +37,19 @@
     event.stopPropagation();
     if (!$lessonsGroup) return;
     togglingId = lesson.file_id;
-    try {
-      await withMinLoading(async () => {
-        await toggleMark($lessonsGroup, lesson);
-      });
-    } finally {
-      togglingId = null;
-    }
+    try { await withMinLoading(async () => { await toggleMark($lessonsGroup, lesson); }); }
+    finally { togglingId = null; }
   }
 
   function askDeleteOne(lesson: any, event: MouseEvent) {
     event.stopPropagation();
     $confirmMessage = $t('lessons.confirm_delete_one', { date: lesson.date, time: lesson.time });
     $confirmCallback = async () => {
-      $confirmMessage = null;
-      $confirmCallback = null;
+      $confirmMessage = null; $confirmCallback = null;
       if (!$lessonsGroup || !lesson.file_id) return;
       deletingId = lesson.file_id;
-      try {
-        await withMinLoading(async () => {
-          await removeLesson($lessonsGroup, lesson.file_id);
-        });
-      } finally {
-        deletingId = null;
-      }
+      try { await withMinLoading(async () => { await removeLesson($lessonsGroup, lesson.file_id); }); }
+      finally { deletingId = null; }
     };
   }
 
@@ -78,8 +58,7 @@
     const count = $selectedLessons.size;
     $confirmMessage = $t('lessons.confirm_delete_selected', { count });
     $confirmCallback = async () => {
-      $confirmMessage = null;
-      $confirmCallback = null;
+      $confirmMessage = null; $confirmCallback = null;
       if (!$lessonsGroup) return;
       deletingBulk = true;
       try {
@@ -87,9 +66,7 @@
           await removeLessons($lessonsGroup, Array.from($selectedLessons));
           $selectedLessons = new Set();
         });
-      } finally {
-        deletingBulk = false;
-      }
+      } finally { deletingBulk = false; }
     };
   }
 </script>
@@ -112,7 +89,7 @@
       <button on:click={clearAll}>🔄 {$t('lessons.clear_all')}</button>
       <button class="danger" on:click={askDeleteSelected} disabled={$selectedLessons.size === 0 || deletingBulk}>
         {#if deletingBulk}
-          <LoadingSpinner active size={14} color="#d9534f" /> {$t('lessons.deleting')}
+          <LoadingSpinner active size={14} color="var(--danger)" /> {$t('lessons.deleting')}
         {:else}
           🗑️ {$t('lessons.delete_selected')} ({$selectedLessons.size})
         {/if}
@@ -136,7 +113,7 @@
 
         <button class="mark-btn" class:marked={lesson.marked} on:click={(e) => onToggleMark(lesson, e)} disabled={togglingId === lesson.file_id}>
           {#if togglingId === lesson.file_id}
-            <LoadingSpinner active size={12} color="#4a90d9" />
+            <LoadingSpinner active size={12} color="var(--accent)" />
           {:else}
             {lesson.marked ? '✓ ' + $t('lessons.in_journal') : '○ ' + $t('lessons.not_in_journal')}
           {/if}
@@ -145,7 +122,7 @@
         <button class="btn edit" on:click={(e) => openEdit(lesson, e)} title={$t('common.edit')}>✏️</button>
         <button class="btn delete" on:click={(e) => askDeleteOne(lesson, e)} disabled={deletingId === lesson.file_id} title={$t('common.delete')}>
           {#if deletingId === lesson.file_id}
-            <LoadingSpinner active size={14} color="#d9534f" />
+            <LoadingSpinner active size={14} color="var(--danger)" />
           {:else}
             🗑️
           {/if}
@@ -161,22 +138,23 @@
 
 <style>
   .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 8px; }
-  select { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
-  .back, .add { background: #4a90d9; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
+  select { flex: 1; padding: 8px; border: 1px solid var(--border-input); border-radius: 4px; background: var(--bg-input); color: var(--text); }
+  .back, .add { background: var(--accent); color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
+  .back:hover, .add:hover { background: var(--accent-hover); }
   .bulk { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
-  .bulk button { background: #eee; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; }
-  .bulk button.danger { background: #fdecea; color: #d9534f; }
+  .bulk button { background: var(--bg-muted); color: var(--text); border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; }
+  .bulk button.danger { background: var(--danger-light); color: var(--danger); }
   .bulk button:disabled { opacity: 0.5; cursor: not-allowed; }
-  .empty { color: #999; text-align: center; padding: 32px; }
-  .lesson-item { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border: 1px solid var(--border, #eee); border-radius: 6px; margin-bottom: 8px; }
+  .empty { color: var(--text-muted); text-align: center; padding: 32px; }
+  .lesson-item { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border: 1px solid var(--border); background: var(--bg-card); border-radius: 6px; margin-bottom: 8px; }
   .info { flex: 1; cursor: pointer; }
-  .topic { color: #666; font-size: 0.85rem; margin-left: 12px; }
-  .hours { color: #999; font-size: 0.85rem; margin-left: 12px; }
-  .mark-btn { border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; background: #f5f5f5; color: #999; display: inline-flex; align-items: center; gap: 6px; min-width: 120px; justify-content: center; }
-  .mark-btn.marked { background: #e8f5e9; color: #2e7d32; }
+  .topic { color: var(--text-secondary); font-size: 0.85rem; margin-left: 12px; }
+  .hours { color: var(--text-muted); font-size: 0.85rem; margin-left: 12px; }
+  .mark-btn { border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; background: var(--bg-muted); color: var(--text-muted); display: inline-flex; align-items: center; gap: 6px; min-width: 120px; justify-content: center; }
+  .mark-btn.marked { background: var(--success-light); color: var(--success); }
   .mark-btn:disabled { opacity: 0.7; cursor: wait; }
   .btn { border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 6px; }
-  .btn.edit { background: #eef4fb; color: #4a90d9; }
-  .btn.delete { background: #fdecea; color: #d9534f; }
+  .btn.edit { background: var(--accent-light); color: var(--accent); }
+  .btn.delete { background: var(--danger-light); color: var(--danger); }
   .btn.delete:disabled { opacity: 0.7; cursor: wait; }
 </style>
