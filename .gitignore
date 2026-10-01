@@ -1,15 +1,33 @@
+# Зависимости
+node_modules/
+.pnpm-store/
+
+# Сборка
+build/
+.svelte-kit/
+dist/
+src-tauri/target/
+src-tauri/gen/
+
+# Редакторы
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+
+# ОС
 .DS_Store
-node_modules
-/build
-/.svelte-kit
-/package
+Thumbs.db
+
+# Окружение
 .env
 .env.*
 !.env.example
+
+# Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
-# Данные пользователя
-data/groups/
-data/imports/
+# Данные пользователя — НЕ коммитить
+data/
 !data/.gitkeep
