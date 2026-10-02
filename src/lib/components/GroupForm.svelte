@@ -13,6 +13,7 @@
   export let onClose: () => void;
   export let editGroup: Group | null = null;
 
+  const oldName = editGroup?.name || '';
   let name = editGroup?.name || '';
   let defaultHours = editGroup?.default_hours ?? 1;
   let students: string[] = editGroup?.students?.length ? [...editGroup.students] : [''];
@@ -31,7 +32,7 @@
     };
     try {
       await withMinLoading(async () => {
-        if (editGroup) await updateGroup(group);
+        if (editGroup) await updateGroup(oldName, group);
         else await addGroup(group);
       });
     } finally {
@@ -75,16 +76,16 @@
 
 <style>
   .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-  .dialog { background: var(--bg-card, white); color: var(--text, #333); padding: 24px; border-radius: 8px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; }
+  .dialog { background: var(--bg-card); color: var(--text); padding: 24px; border-radius: 8px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; }
   h2 { margin: 0 0 16px; font-size: 1.1rem; }
-  label, .label { display: block; margin-bottom: 12px; font-size: 0.9rem; color: #555; }
-  input { width: 100%; padding: 8px; margin-top: 4px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+  label, .label { display: block; margin-bottom: 12px; font-size: 0.9rem; color: var(--text-secondary); }
+  input { width: 100%; padding: 8px; margin-top: 4px; border: 1px solid var(--border-input); border-radius: 4px; box-sizing: border-box; background: var(--bg-input); color: var(--text); }
   .student-row { display: flex; gap: 4px; margin-bottom: 4px; }
-  .remove { background: #fdecea; color: #d9534f; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
-  .add-student { background: none; border: 1px dashed #4a90d9; color: #4a90d9; padding: 8px; width: 100%; border-radius: 4px; cursor: pointer; margin-bottom: 16px; }
+  .remove { background: var(--danger-light); color: var(--danger); border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
+  .add-student { background: none; border: 1px dashed var(--accent); color: var(--accent); padding: 8px; width: 100%; border-radius: 4px; cursor: pointer; margin-bottom: 16px; }
   .buttons { display: flex; gap: 8px; justify-content: flex-end; }
-  button.cancel { background: #eee; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
-  button.save { background: #4a90d9; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 8px; min-width: 160px; justify-content: center; }
+  button.cancel { background: var(--bg-muted); color: var(--text); border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
+  button.save { background: var(--accent); color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 8px; min-width: 160px; justify-content: center; }
   button.save:disabled { opacity: 0.6; cursor: not-allowed; }
   .loader { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.6s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }

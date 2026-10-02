@@ -16,6 +16,7 @@ pub fn run() {
             commands::load_groups,
             commands::save_group,
             commands::delete_group,
+            commands::rename_group,
             commands::load_lessons,
             commands::lesson_exists,
             commands::save_lesson,

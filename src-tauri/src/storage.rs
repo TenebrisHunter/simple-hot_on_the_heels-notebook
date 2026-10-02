@@ -380,3 +380,13 @@ fn format_lesson(lesson: &Lesson) -> String {
     }
     out
 }
+/// Переименовывает папку группы. Все занятия переезжают автоматически.
+pub fn rename_group(old_name: &str, new_name: &str) -> Result<(), String> {
+    if old_name == new_name { return Ok(()); }
+    let src = data_dir().join(old_name);
+    let dst = data_dir().join(new_name);
+    if !src.exists() { return Err("Группа не найдена".to_string()); }
+    if dst.exists() { return Err("Группа с таким именем уже существует".to_string()); }
+    fs::rename(&src, &dst).map_err(|e| e.to_string())?;
+    Ok(())
+}

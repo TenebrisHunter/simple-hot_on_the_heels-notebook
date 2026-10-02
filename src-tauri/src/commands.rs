@@ -63,3 +63,7 @@ pub fn clean_old_trash() -> Result<(), String> { storage::clean_old_trash() }
 
 #[tauri::command]
 pub fn toggle_mark(group_name: String, lesson: Lesson) -> Result<(), String> { storage::toggle_mark(&group_name, &lesson) }
+#[tauri::command]
+pub fn rename_group(old_name: String, new_name: String) -> Result<(), String> {
+    storage::rename_group(&old_name, &new_name)
+}

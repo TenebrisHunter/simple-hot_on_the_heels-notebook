@@ -57,3 +57,6 @@ export async function cleanOldTrash(): Promise<void> { await invoke('clean_old_t
 export async function toggleMark(groupName: string, lesson: Lesson): Promise<void> {
   await invoke('toggle_mark', { groupName, lesson });
 }
+export async function renameGroup(oldName: string, newName: string): Promise<void> {
+  await invoke('rename_group', { oldName, newName });
+}
