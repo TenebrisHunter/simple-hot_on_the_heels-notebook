@@ -60,3 +60,7 @@ export async function toggleMark(groupName: string, lesson: Lesson): Promise<voi
 export async function renameGroup(oldName: string, newName: string): Promise<void> {
   await invoke('rename_group', { oldName, newName });
 }
+
+export async function hasTrashForGroup(groupName: string): Promise<boolean> {
+  return await invoke('has_trash_for_group', { groupName });
+}

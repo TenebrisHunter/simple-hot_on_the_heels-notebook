@@ -12,6 +12,7 @@
     "add_student": "Add student", "remove_student": "Remove student",
     "save": "Save", "delete": "Delete group",
     "confirm_delete": "Delete group? It will be moved to trash.",
+    "confirm_rename_trash": "The trash contains deleted lessons of group «{old}». After renaming to «{new}» they cannot be restored. Continue?",
     "empty": "No groups yet",
     "students_count": "students"
   },
@@ -28,7 +29,7 @@
     "confirm_delete": "Delete lesson? It will be moved to trash.",
     "confirm_delete_one": "Delete lesson from {date} {time}? It will be moved to trash.",
     "confirm_delete_selected": "Delete selected entries ({count})? They will be moved to trash.",
-    "confirm_overwrite": "There is already a lesson for group \"{group}\" on this day. Overwrite?",
+    "confirm_overwrite": "There is already a lesson for group «{group}» on this day. Overwrite?",
     "empty": "No lessons yet",
     "choose_group": "Choose a group",
     "back": "Back",
@@ -55,7 +56,7 @@
     "empty": "Empty", "loading": "Loading...",
     "restore": "Restore", "delete_forever": "Delete forever",
     "confirm_delete_lesson": "Delete entry forever?",
-    "confirm_delete_group": "Delete group \"{name}\" forever?"
+    "confirm_delete_group": "Delete group «{name}» forever?"
   },
   "settings": {
     "title": "Settings",

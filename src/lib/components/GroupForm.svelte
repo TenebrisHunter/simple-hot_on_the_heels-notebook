@@ -3,11 +3,15 @@
   GroupForm.svelte — форма создания/редактирования группы
   Автор: Ключенко М.А. (Омск, ОмГТУ, БИТ-211)
   ============================================================
+  При переименовании группы, если в корзине есть удалённые
+  занятия этой группы — показываем предупреждение.
+  ============================================================
 -->
 <script lang="ts">
   import { t } from '../i18n';
   import { addGroup, updateGroup } from '../stores/groups';
-  import { withMinLoading } from '../stores/ui';
+  import { withMinLoading, confirmMessage, confirmCallback } from '../stores/ui';
+  import { hasTrashForGroup } from '../utils/storage';
   import type { Group } from '../utils/storage';
 
   export let onClose: () => void;
@@ -22,8 +26,7 @@
   function addStudent() { students = [...students, '']; }
   function removeStudent(i: number) { students = students.filter((_, idx) => idx !== i); }
 
-  async function save() {
-    if (!name.trim()) return;
+  async function doSave() {
     saving = true;
     const group: Group = {
       name: name.trim(),
@@ -39,6 +42,26 @@
       saving = false;
       onClose();
     }
+  }
+
+  async function save() {
+    if (!name.trim()) return;
+
+    // Проверяем: если имя меняется и есть корзина — предупреждаем
+    if (editGroup && oldName !== name.trim()) {
+      const hasTrash = await hasTrashForGroup(oldName);
+      if (hasTrash) {
+        $confirmMessage = $t('groups.confirm_rename_trash', { old: oldName, new: name.trim() });
+        $confirmCallback = () => {
+          $confirmMessage = null;
+          $confirmCallback = null;
+          doSave();
+        };
+        return;
+      }
+    }
+
+    await doSave();
   }
 </script>
 

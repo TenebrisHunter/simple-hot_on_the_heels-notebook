@@ -67,3 +67,8 @@ pub fn toggle_mark(group_name: String, lesson: Lesson) -> Result<(), String> { s
 pub fn rename_group(old_name: String, new_name: String) -> Result<(), String> {
     storage::rename_group(&old_name, &new_name)
 }
+
+#[tauri::command]
+pub fn has_trash_for_group(group_name: String) -> Result<bool, String> {
+    storage::has_trash_for_group(&group_name)
+}

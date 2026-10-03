@@ -12,6 +12,7 @@
     "add_student": "添加学生", "remove_student": "删除学生",
     "save": "保存", "delete": "删除小组",
     "confirm_delete": "删除小组？将移入回收站。",
+    "confirm_rename_trash": "回收站中有小组「{old}」的已删除课程。重命名为「{new}」后将无法恢复。是否继续？",
     "empty": "暂无小组",
     "students_count": "人"
   },

@@ -390,3 +390,11 @@ pub fn rename_group(old_name: &str, new_name: &str) -> Result<(), String> {
     fs::rename(&src, &dst).map_err(|e| e.to_string())?;
     Ok(())
 }
+
+/// Проверяет, есть ли в корзине удалённые занятия указанной группы.
+pub fn has_trash_for_group(group_name: &str) -> Result<bool, String> {
+    let dir = trash_dir().join("lessons").join(group_name);
+    if !dir.exists() { return Ok(false); }
+    let count = fs::read_dir(&dir).map_err(|e| e.to_string())?.count();
+    Ok(count > 0)
+}
