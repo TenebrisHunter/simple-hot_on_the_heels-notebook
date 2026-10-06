@@ -22,6 +22,7 @@
   let time = lessonToEdit?.time || now.toTimeString().slice(0, 8);
   let topic = lessonToEdit?.topic || '';
   let materials = lessonToEdit?.materials || '';
+  let grades = lessonToEdit?.grades || '';
   let marked = lessonToEdit?.marked || false;
   let hours = lessonToEdit?.hours ?? 1;
   let saving = false;
@@ -39,7 +40,7 @@
   async function doSave(overwrite: boolean) {
     saving = true;
     const lesson: Lesson = {
-      date, time, hours, topic, materials,
+      date, time, hours, topic, materials, grades,
       students: editableStudents,
       marked,
       file_id: lessonToEdit?.file_id
@@ -78,6 +79,10 @@
     <div class="label">{$t('lessons.students')}</div>
     <StudentChecklist bind:students={editableStudents} />
 
+    <label>{$t('lessons.grades')}
+      <textarea bind:value={grades} rows="2" placeholder={$t('lessons.grades_placeholder')}></textarea>
+    </label>
+
     <div class="row">
       <label>{$t('lessons.date')}<input type="date" bind:value={date} /></label>
       <label>{$t('lessons.time')}<input type="time" step="1" bind:value={time} /></label>
@@ -103,16 +108,16 @@
 
 <style>
   .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-  .dialog { background: var(--bg-card, white); color: var(--text, #333); padding: 24px; border-radius: 8px; max-width: 600px; width: 90%; max-height: 85vh; overflow-y: auto; }
+  .dialog { background: var(--bg-card); color: var(--text); padding: 24px; border-radius: 8px; max-width: 600px; width: 90%; max-height: 85vh; overflow-y: auto; }
   h2 { margin: 0 0 16px; font-size: 1.1rem; }
-  label, .label { display: block; margin-bottom: 12px; font-size: 0.9rem; color: #555; }
-  input, textarea { width: 100%; padding: 8px; margin-top: 4px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-family: inherit; }
+  label, .label { display: block; margin-bottom: 12px; font-size: 0.9rem; color: var(--text-secondary); }
+  input, textarea { width: 100%; padding: 8px; margin-top: 4px; border: 1px solid var(--border-input); border-radius: 4px; box-sizing: border-box; font-family: inherit; background: var(--bg-input); color: var(--text); }
   .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .check { display: flex; align-items: center; gap: 8px; cursor: pointer; }
   .check input { width: auto; margin: 0; }
   .buttons { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
-  button.cancel { background: #eee; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
-  button.save { background: #4a90d9; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 8px; min-width: 160px; justify-content: center; }
+  button.cancel { background: var(--bg-muted); color: var(--text); border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
+  button.save { background: var(--accent); color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 8px; min-width: 160px; justify-content: center; }
   button.save:disabled { opacity: 0.6; cursor: not-allowed; }
   .loader { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.6s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }

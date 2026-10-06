@@ -19,7 +19,7 @@
   "lessons": {
     "title": "课程", "add": "新建课程", "edit": "编辑课程",
     "date": "日期", "time": "时间", "hours": "学时",
-    "topic": "主题", "materials": "材料", "students": "学生",
+    "topic": "主题", "materials": "材料", "grades": "成绩", "grades_placeholder": "例如：4-|3+", "students": "学生",
     "present": "出席", "absent": "缺席", "reason": "原因",
     "number": "序号", "student": "学生",
     "in_journal": "已录入", "not_in_journal": "未录入",

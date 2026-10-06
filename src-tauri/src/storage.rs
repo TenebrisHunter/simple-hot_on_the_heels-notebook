@@ -31,6 +31,8 @@ pub struct Lesson {
     pub hours: f64,
     pub topic: String,
     pub materials: String,
+    #[serde(default)]
+    pub grades: String,
     pub students: Vec<Student>,
     #[serde(default)]
     pub marked: bool,
@@ -87,9 +89,7 @@ pub fn save_group(group: &Group) -> Result<(), String> {
     fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
     let mut content = String::new();
     content.push_str(&format!("Часы: {}\n", group.default_hours));
-    for s in &group.students {
-        content.push_str(&format!("{}\n", s));
-    }
+    for s in &group.students { content.push_str(&format!("{}\n", s)); }
     fs::write(dir.join("group.txt"), content).map_err(|e| e.to_string())?;
     Ok(())
 }
@@ -99,9 +99,24 @@ pub fn delete_group(name: &str) -> Result<(), String> {
     if !src.exists() { return Err("Группа не найдена".to_string()); }
     let trash = trash_dir().join("groups");
     fs::create_dir_all(&trash).map_err(|e| e.to_string())?;
-    let dst = trash.join(format!("{}_{}", name, timestamp()));
+    fs::rename(&src, trash.join(format!("{}_{}", name, timestamp()))).map_err(|e| e.to_string())?;
+    Ok(())
+}
+
+pub fn rename_group(old_name: &str, new_name: &str) -> Result<(), String> {
+    if old_name == new_name { return Ok(()); }
+    let src = data_dir().join(old_name);
+    let dst = data_dir().join(new_name);
+    if !src.exists() { return Err("Группа не найдена".to_string()); }
+    if dst.exists() { return Err("Группа с таким именем уже существует".to_string()); }
     fs::rename(&src, &dst).map_err(|e| e.to_string())?;
     Ok(())
+}
+
+pub fn has_trash_for_group(group_name: &str) -> Result<bool, String> {
+    let dir = trash_dir().join("lessons").join(group_name);
+    if !dir.exists() { return Ok(false); }
+    Ok(fs::read_dir(&dir).map_err(|e| e.to_string())?.count() > 0)
 }
 
 pub fn load_lessons(group_name: &str) -> Result<Vec<Lesson>, String> {
@@ -129,8 +144,7 @@ pub fn lesson_exists(group_name: &str, date: &str) -> Result<bool, String> {
     let dir = data_dir().join(group_name);
     if !dir.exists() { return Ok(false); }
     for entry in fs::read_dir(&dir).map_err(|e| e.to_string())? {
-        let entry = entry.map_err(|e| e.to_string())?;
-        let name = entry.file_name().to_string_lossy().to_string();
+        let name = entry.map_err(|e| e.to_string())?.file_name().to_string_lossy().to_string();
         if name.starts_with(date) && name.ends_with(".txt") { return Ok(true); }
     }
     Ok(false)
@@ -139,11 +153,9 @@ pub fn lesson_exists(group_name: &str, date: &str) -> Result<bool, String> {
 pub fn save_lesson(group_name: &str, lesson: &Lesson, overwrite: bool) -> Result<String, String> {
     let dir = data_dir().join(group_name);
     fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
-
     let base = format!("{}_{}", lesson.date, lesson.time.replace(":", "-"));
     let mut filename = format!("{}.txt", base);
     let mut path = dir.join(&filename);
-
     if !overwrite && path.exists() {
         let mut counter = 1;
         loop {
@@ -153,7 +165,6 @@ pub fn save_lesson(group_name: &str, lesson: &Lesson, overwrite: bool) -> Result
             counter += 1;
         }
     }
-
     fs::write(&path, format_lesson(lesson)).map_err(|e| e.to_string())?;
     Ok(filename.trim_end_matches(".txt").to_string())
 }
@@ -163,16 +174,13 @@ pub fn delete_lesson(group_name: &str, file_id: &str) -> Result<(), String> {
     if !src.exists() { return Err("Файл не найден".to_string()); }
     let trash = trash_dir().join("lessons").join(group_name);
     fs::create_dir_all(&trash).map_err(|e| e.to_string())?;
-    let dst = trash.join(format!("{}.txt", file_id));
-    fs::rename(&src, &dst).map_err(|e| e.to_string())?;
+    fs::rename(&src, trash.join(format!("{}.txt", file_id))).map_err(|e| e.to_string())?;
     Ok(())
 }
 
 pub fn delete_lessons(group_name: &str, file_ids: Vec<String>) -> Result<usize, String> {
     let mut count = 0;
-    for id in file_ids {
-        if delete_lesson(group_name, &id).is_ok() { count += 1; }
-    }
+    for id in file_ids { if delete_lesson(group_name, &id).is_ok() { count += 1; } }
     Ok(count)
 }
 
@@ -181,8 +189,7 @@ pub fn list_trash_lessons(group_name: &str) -> Result<Vec<String>, String> {
     if !dir.exists() { return Ok(vec![]); }
     let mut files = vec![];
     for entry in fs::read_dir(&dir).map_err(|e| e.to_string())? {
-        let entry = entry.map_err(|e| e.to_string())?;
-        let name = entry.file_name().to_string_lossy().to_string();
+        let name = entry.map_err(|e| e.to_string())?.file_name().to_string_lossy().to_string();
         if name.ends_with(".txt") { files.push(name.trim_end_matches(".txt").to_string()); }
     }
     Ok(files)
@@ -194,8 +201,7 @@ pub fn list_trash_groups() -> Result<Vec<String>, String> {
     let mut groups = vec![];
     for entry in fs::read_dir(&dir).map_err(|e| e.to_string())? {
         let entry = entry.map_err(|e| e.to_string())?;
-        let name = entry.file_name().to_string_lossy().to_string();
-        if entry.path().is_dir() { groups.push(name); }
+        if entry.path().is_dir() { groups.push(entry.file_name().to_string_lossy().to_string()); }
     }
     Ok(groups)
 }
@@ -205,8 +211,7 @@ pub fn restore_trash_lesson(group_name: &str, file_id: &str) -> Result<(), Strin
     if !src.exists() { return Err("Файл не найден".to_string()); }
     let dst_dir = data_dir().join(group_name);
     fs::create_dir_all(&dst_dir).map_err(|e| e.to_string())?;
-    let dst = dst_dir.join(format!("{}.txt", file_id));
-    fs::rename(&src, &dst).map_err(|e| e.to_string())?;
+    fs::rename(&src, dst_dir.join(format!("{}.txt", file_id))).map_err(|e| e.to_string())?;
     Ok(())
 }
 
@@ -241,13 +246,10 @@ pub fn clean_old_trash() -> Result<(), String> {
         if let Ok(entries) = fs::read_dir(dir) {
             for entry in entries.flatten() {
                 let path = entry.path();
-                if path.is_dir() {
-                    walk(&path, now, max_age);
-                } else if let Ok(meta) = entry.metadata() {
-                    if let Ok(modified) = meta.modified() {
-                        if now.duration_since(modified).unwrap_or_default() > max_age {
-                            let _ = fs::remove_file(&path);
-                        }
+                if path.is_dir() { walk(&path, now, max_age); }
+                else if let Ok(meta) = entry.metadata() {
+                    if let Ok(m) = meta.modified() {
+                        if now.duration_since(m).unwrap_or_default() > max_age { let _ = fs::remove_file(&path); }
                     }
                 }
             }
@@ -287,48 +289,44 @@ fn timestamp() -> u64 {
     std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_secs()
 }
 
-/// Парсит занятие. Поддерживает многострочные поля через маркеры <<< >>>.
 fn parse_lesson(content: &str) -> Result<Lesson, String> {
     let mut date = String::new();
     let mut time = String::new();
     let mut hours = 0.0;
     let mut topic = String::new();
     let mut materials = String::new();
+    let mut grades = String::new();
     let mut marked = false;
     let mut students = vec![];
-
     let lines: Vec<&str> = content.lines().collect();
     let mut i = 0;
-
     while i < lines.len() {
         let line = lines[i];
-
         if let Some(v) = line.strip_prefix("Дата: ") { date = v.to_string(); i += 1; }
         else if let Some(v) = line.strip_prefix("Время: ") { time = v.to_string(); i += 1; }
         else if let Some(v) = line.strip_prefix("Часы: ") { hours = v.parse().unwrap_or(0.0); i += 1; }
         else if let Some(v) = line.strip_prefix("Отмечено: ") { marked = v.trim() == "да"; i += 1; }
-        else if let Some(v) = line.strip_prefix("Тема: <<<") {
+        else if line.starts_with("Тема: <<<") {
             i += 1;
             let mut buf = vec![];
-            while i < lines.len() && lines[i].trim() != ">>>" {
-                buf.push(lines[i]);
-                i += 1;
-            }
-            topic = buf.join("\n");
-            i += 1; // пропускаем >>>
+            while i < lines.len() && lines[i].trim() != ">>>" { buf.push(lines[i]); i += 1; }
+            topic = buf.join("\n"); i += 1;
         }
         else if let Some(v) = line.strip_prefix("Тема: ") { topic = v.to_string(); i += 1; }
-        else if let Some(v) = line.strip_prefix("Материалы: <<<") {
+        else if line.starts_with("Материалы: <<<") {
             i += 1;
             let mut buf = vec![];
-            while i < lines.len() && lines[i].trim() != ">>>" {
-                buf.push(lines[i]);
-                i += 1;
-            }
-            materials = buf.join("\n");
-            i += 1;
+            while i < lines.len() && lines[i].trim() != ">>>" { buf.push(lines[i]); i += 1; }
+            materials = buf.join("\n"); i += 1;
         }
         else if let Some(v) = line.strip_prefix("Материалы: ") { materials = v.to_string(); i += 1; }
+        else if line.starts_with("Отметки: <<<") {
+            i += 1;
+            let mut buf = vec![];
+            while i < lines.len() && lines[i].trim() != ">>>" { buf.push(lines[i]); i += 1; }
+            grades = buf.join("\n"); i += 1;
+        }
+        else if let Some(v) = line.strip_prefix("Отметки: ") { grades = v.to_string(); i += 1; }
         else if line.contains('\t') {
             let parts: Vec<&str> = line.split('\t').collect();
             if parts.len() >= 2 {
@@ -342,11 +340,9 @@ fn parse_lesson(content: &str) -> Result<Lesson, String> {
         }
         else { i += 1; }
     }
-
-    Ok(Lesson { date, time, hours, topic, materials, students, marked, file_id: String::new() })
+    Ok(Lesson { date, time, hours, topic, materials, grades, students, marked, file_id: String::new() })
 }
 
-/// Форматирует занятие. Многострочные поля — через маркеры <<< >>>.
 fn format_lesson(lesson: &Lesson) -> String {
     let mut out = String::new();
     out.push_str(&format!("Дата: {}\n", lesson.date));
@@ -354,7 +350,6 @@ fn format_lesson(lesson: &Lesson) -> String {
     out.push_str(&format!("Часы: {}\n", lesson.hours));
     out.push_str(&format!("Отмечено: {}\n", if lesson.marked { "да" } else { "нет" }));
 
-    // Тема — многострочно
     if lesson.topic.contains('\n') || lesson.topic.trim().is_empty() {
         out.push_str("Тема: <<<\n");
         out.push_str(&lesson.topic);
@@ -363,13 +358,20 @@ fn format_lesson(lesson: &Lesson) -> String {
         out.push_str(&format!("Тема: {}\n", lesson.topic));
     }
 
-    // Материалы — многострочно
     if lesson.materials.contains('\n') || lesson.materials.trim().is_empty() {
         out.push_str("Материалы: <<<\n");
         out.push_str(&lesson.materials);
         out.push_str("\n>>>\n");
     } else {
         out.push_str(&format!("Материалы: {}\n", lesson.materials));
+    }
+
+    if lesson.grades.contains('\n') || lesson.grades.trim().is_empty() {
+        out.push_str("Отметки: <<<\n");
+        out.push_str(&lesson.grades);
+        out.push_str("\n>>>\n");
+    } else {
+        out.push_str(&format!("Отметки: {}\n", lesson.grades));
     }
 
     out.push('\n');
@@ -379,22 +381,4 @@ fn format_lesson(lesson: &Lesson) -> String {
         out.push('\n');
     }
     out
-}
-/// Переименовывает папку группы. Все занятия переезжают автоматически.
-pub fn rename_group(old_name: &str, new_name: &str) -> Result<(), String> {
-    if old_name == new_name { return Ok(()); }
-    let src = data_dir().join(old_name);
-    let dst = data_dir().join(new_name);
-    if !src.exists() { return Err("Группа не найдена".to_string()); }
-    if dst.exists() { return Err("Группа с таким именем уже существует".to_string()); }
-    fs::rename(&src, &dst).map_err(|e| e.to_string())?;
-    Ok(())
-}
-
-/// Проверяет, есть ли в корзине удалённые занятия указанной группы.
-pub fn has_trash_for_group(group_name: &str) -> Result<bool, String> {
-    let dir = trash_dir().join("lessons").join(group_name);
-    if !dir.exists() { return Ok(false); }
-    let count = fs::read_dir(&dir).map_err(|e| e.to_string())?.count();
-    Ok(count > 0)
 }

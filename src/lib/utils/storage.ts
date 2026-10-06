@@ -23,6 +23,7 @@ export interface Lesson {
   hours: number;
   topic: string;
   materials: string;
+  grades?: string;
   students: Student[];
   marked?: boolean;
   file_id?: string;

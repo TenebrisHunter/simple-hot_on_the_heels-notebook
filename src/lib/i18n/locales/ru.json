@@ -19,7 +19,7 @@
   "lessons": {
     "title": "Занятия", "add": "Новое занятие", "edit": "Редактировать занятие",
     "date": "Дата", "time": "Время", "hours": "Часы",
-    "topic": "Тема", "materials": "Материалы", "students": "Ученики",
+    "topic": "Тема", "materials": "Материалы", "grades": "Отметки", "grades_placeholder": "Например: 4-|3+", "students": "Ученики",
     "present": "Был", "absent": "Не был", "reason": "Причина",
     "number": "№", "student": "Ученик",
     "in_journal": "В журнале", "not_in_journal": "Не в журнале",
