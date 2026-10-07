@@ -18,6 +18,16 @@
   let deletingBulk = false;
   let togglingId: string | null = null;
 
+  // Сортировка: по возрастанию (старые сверху) или по убыванию (новые сверху)
+  const KEY_SORT = 'sport-diary:lessons-sort';
+  let sortAsc = (typeof localStorage !== 'undefined' ? localStorage.getItem(KEY_SORT) : 'asc') !== 'desc';
+
+  function toggleSort() {
+    sortAsc = !sortAsc;
+    if (typeof localStorage !== 'undefined') localStorage.setItem(KEY_SORT, sortAsc ? 'asc' : 'desc');
+  }
+
+  $: sortedLessons = sortAsc ? $lessons : [...$lessons].reverse();
   $: if ($lessonsGroup) refreshLessons($lessonsGroup);
 
   function openView(lesson: any) { $selectedLesson = lesson; }
@@ -79,6 +89,9 @@
       {#each $groups as g}<option value={g.name}>{g.name}</option>{/each}
     </select>
     {#if $lessonsGroup}
+      <button class="sort-btn" on:click={toggleSort} title={sortAsc ? $t('lessons.sort_asc') : $t('lessons.sort_desc')}>
+        {sortAsc ? '↓' : '↑'} {$t('lessons.sort_btn')}
+      </button>
       <button class="add" on:click={openCreate}>➕ {$t('lessons.add')}</button>
     {/if}
   </div>
@@ -102,7 +115,7 @@
   {:else if $lessons.length === 0}
     <p class="empty">{$t('lessons.empty')}</p>
   {:else}
-    {#each $lessons as lesson}
+    {#each sortedLessons as lesson}
       <div class="lesson-item">
         <input type="checkbox" checked={$selectedLessons.has(lesson.file_id || '')} on:change={() => toggleSelect(lesson.file_id || '')} />
         <div class="info" role="button" tabindex="0" on:click={() => openView(lesson)} on:keydown={(e) => e.key === 'Enter' && openView(lesson)}>
@@ -137,9 +150,10 @@
 {/if}
 
 <style>
-  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 8px; }
-  select { flex: 1; padding: 8px; border: 1px solid var(--border-input); border-radius: 4px; background: var(--bg-input); color: var(--text); }
-  .back, .add { background: var(--accent); color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
+  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 8px; flex-wrap: wrap; }
+  select { flex: 1; min-width: 150px; padding: 8px; border: 1px solid var(--border-input); border-radius: 4px; background: var(--bg-input); color: var(--text); }
+  .back, .add, .sort-btn { background: var(--accent); color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
+  .sort-btn { background: var(--bg-muted); color: var(--text); }
   .back:hover, .add:hover { background: var(--accent-hover); }
   .bulk { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
   .bulk button { background: var(--bg-muted); color: var(--text); border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; }
