@@ -14,7 +14,7 @@
   async function copyAll() {
     if (!$selectedLesson) return;
     const html = copyAllAsHtml($selectedLesson);
-    const plain = $selectedLesson.students.map((s: any) => `${s.name}\t${s.present ? $t('common.yes').toLowerCase() : $t('common.no').toLowerCase()}${s.reason ? '\t' + s.reason : ''}`).join('\n');
+    const plain = $selectedLesson.students.map((s: any) => `${s.name}\t${s.present ? $t('common.yes').toLowerCase() : $t('common.no').toLowerCase()}${s.reason ? '\t' + s.reason : ''}${s.grade ? '\t' + s.grade : ''}`).join('\n');
     try { await toClipboardHtml(html, plain); } catch { await toClipboard(plain); }
     copied = true; setTimeout(() => copied = false, 1500);
   }
@@ -61,13 +61,6 @@
         <div class="multiline">{$selectedLesson.materials || '—'}</div>
       </div>
 
-      {#if $selectedLesson.grades}
-        <div class="field">
-          <strong>{$t('lessons.grades')}:</strong>
-          <div class="multiline">{$selectedLesson.grades}</div>
-        </div>
-      {/if}
-
       <h3>{$t('lessons.students')}</h3>
       <table class="attendance">
         <thead>
@@ -75,6 +68,7 @@
             <th>{$t('lessons.number')}</th>
             <th>{$t('lessons.student')}</th>
             <th>{$t('lessons.present')}</th>
+            <th>{$t('lessons.grade')}</th>
             <th>{$t('lessons.reason')}</th>
           </tr>
         </thead>
@@ -90,6 +84,7 @@
                   <span class="no">✗ {$t('common.no')}</span>
                 {/if}
               </td>
+              <td class="grade-cell">{s.grade || ''}</td>
               <td class="reason">{s.reason || ''}</td>
             </tr>
           {/each}
@@ -110,7 +105,7 @@
 
 <style>
   .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-  .dialog { background: var(--bg-card); color: var(--text); padding: 24px; border-radius: 8px; max-width: 700px; width: 90%; max-height: 85vh; overflow-y: auto; }
+  .dialog { background: var(--bg-card); color: var(--text); padding: 24px; border-radius: 8px; max-width: 750px; width: 90%; max-height: 85vh; overflow-y: auto; }
   .header { display: flex; justify-content: space-between; align-items: center; }
   h2 { margin: 0 0 16px; font-size: 1.1rem; }
   h3 { margin: 16px 0 8px; font-size: 0.95rem; }
@@ -125,6 +120,7 @@
   .attendance tr.absent td { color: var(--text-muted); }
   .attendance .num { width: 30px; color: var(--text-muted); text-align: center; }
   .attendance .center { text-align: center; width: 90px; }
+  .attendance .grade-cell { width: 100px; font-family: monospace; }
   .attendance .reason { color: var(--warning); font-size: 0.85rem; }
   .yes { color: var(--success); font-weight: 600; }
   .no { color: var(--danger); font-weight: 600; }

@@ -11,7 +11,7 @@
 import { invoke } from '@tauri-apps/api/core';
 
 /** Ученик внутри занятия: имя, присутствие, причина отсутствия. */
-export interface Student { name: string; present: boolean; reason?: string; }
+export interface Student { name: string; present: boolean; reason?: string; grade?: string; }
 
 /** Группа: имя, список учеников, часы по умолчанию. */
 export interface Group { name: string; students: string[]; default_hours: number; }

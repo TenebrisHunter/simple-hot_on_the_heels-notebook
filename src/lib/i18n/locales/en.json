@@ -19,7 +19,7 @@
   "lessons": {
     "title": "Lessons", "add": "New lesson", "edit": "Edit lesson",
     "date": "Date", "time": "Time", "hours": "Hours",
-    "topic": "Topic", "materials": "Materials", "grades": "Grades", "grades_placeholder": "e.g. 4-|3+", "students": "Students",
+    "topic": "Topic", "materials": "Materials", "grade": "Grade", "grade_placeholder": "4-", "students": "Students",
     "present": "Present", "absent": "Absent", "reason": "Reason",
     "number": "#", "student": "Student",
     "in_journal": "In journal", "not_in_journal": "Not in journal",

@@ -18,7 +18,6 @@
   let deletingBulk = false;
   let togglingId: string | null = null;
 
-  // Сортировка: по возрастанию (старые сверху) или по убыванию (новые сверху)
   const KEY_SORT = 'sport-diary:lessons-sort';
   let sortAsc = (typeof localStorage !== 'undefined' ? localStorage.getItem(KEY_SORT) : 'asc') !== 'desc';
 
@@ -89,9 +88,6 @@
       {#each $groups as g}<option value={g.name}>{g.name}</option>{/each}
     </select>
     {#if $lessonsGroup}
-      <button class="sort-btn" on:click={toggleSort} title={sortAsc ? $t('lessons.sort_asc') : $t('lessons.sort_desc')}>
-        {sortAsc ? '↓' : '↑'} {$t('lessons.sort_btn')}
-      </button>
       <button class="add" on:click={openCreate}>➕ {$t('lessons.add')}</button>
     {/if}
   </div>
@@ -106,6 +102,9 @@
         {:else}
           🗑️ {$t('lessons.delete_selected')} ({$selectedLessons.size})
         {/if}
+      </button>
+      <button class="sort-btn" on:click={toggleSort} title={sortAsc ? $t('lessons.sort_asc') : $t('lessons.sort_desc')}>
+        {sortAsc ? '↓' : '↑'} {$t('lessons.sort_btn')}
       </button>
     </div>
   {/if}
@@ -152,13 +151,13 @@
 <style>
   .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 8px; flex-wrap: wrap; }
   select { flex: 1; min-width: 150px; padding: 8px; border: 1px solid var(--border-input); border-radius: 4px; background: var(--bg-input); color: var(--text); }
-  .back, .add, .sort-btn { background: var(--accent); color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
-  .sort-btn { background: var(--bg-muted); color: var(--text); }
+  .back, .add { background: var(--accent); color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
   .back:hover, .add:hover { background: var(--accent-hover); }
-  .bulk { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+  .bulk { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; align-items: center; }
   .bulk button { background: var(--bg-muted); color: var(--text); border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; }
   .bulk button.danger { background: var(--danger-light); color: var(--danger); }
   .bulk button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .bulk .sort-btn { margin-left: auto; background: var(--bg-card); border: 1px solid var(--border); }
   .empty { color: var(--text-muted); text-align: center; padding: 32px; }
   .lesson-item { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border: 1px solid var(--border); background: var(--bg-card); border-radius: 6px; margin-bottom: 8px; }
   .info { flex: 1; cursor: pointer; }

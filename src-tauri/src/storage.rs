@@ -2,6 +2,7 @@
 //  storage.rs — чтение/запись txt-файлов
 //  Автор: Ключенко М.А. (Омск, ОмГТУ, БИТ-211)
 // ============================================================
+//  Формат строки ученика: name\tpresent\treason\tgrade
 
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -11,7 +12,10 @@ use serde::{Deserialize, Serialize};
 pub struct Student {
     pub name: String,
     pub present: bool,
+    #[serde(default)]
     pub reason: Option<String>,
+    #[serde(default)]
+    pub grade: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -31,8 +35,6 @@ pub struct Lesson {
     pub hours: f64,
     pub topic: String,
     pub materials: String,
-    #[serde(default)]
-    pub grades: String,
     pub students: Vec<Student>,
     #[serde(default)]
     pub marked: bool,
@@ -295,7 +297,6 @@ fn parse_lesson(content: &str) -> Result<Lesson, String> {
     let mut hours = 0.0;
     let mut topic = String::new();
     let mut materials = String::new();
-    let mut grades = String::new();
     let mut marked = false;
     let mut students = vec![];
     let lines: Vec<&str> = content.lines().collect();
@@ -307,40 +308,32 @@ fn parse_lesson(content: &str) -> Result<Lesson, String> {
         else if let Some(v) = line.strip_prefix("Часы: ") { hours = v.parse().unwrap_or(0.0); i += 1; }
         else if let Some(v) = line.strip_prefix("Отмечено: ") { marked = v.trim() == "да"; i += 1; }
         else if line.starts_with("Тема: <<<") {
-            i += 1;
-            let mut buf = vec![];
+            i += 1; let mut buf = vec![];
             while i < lines.len() && lines[i].trim() != ">>>" { buf.push(lines[i]); i += 1; }
             topic = buf.join("\n"); i += 1;
         }
         else if let Some(v) = line.strip_prefix("Тема: ") { topic = v.to_string(); i += 1; }
         else if line.starts_with("Материалы: <<<") {
-            i += 1;
-            let mut buf = vec![];
+            i += 1; let mut buf = vec![];
             while i < lines.len() && lines[i].trim() != ">>>" { buf.push(lines[i]); i += 1; }
             materials = buf.join("\n"); i += 1;
         }
         else if let Some(v) = line.strip_prefix("Материалы: ") { materials = v.to_string(); i += 1; }
-        else if line.starts_with("Отметки: <<<") {
-            i += 1;
-            let mut buf = vec![];
-            while i < lines.len() && lines[i].trim() != ">>>" { buf.push(lines[i]); i += 1; }
-            grades = buf.join("\n"); i += 1;
-        }
-        else if let Some(v) = line.strip_prefix("Отметки: ") { grades = v.to_string(); i += 1; }
         else if line.contains('\t') {
             let parts: Vec<&str> = line.split('\t').collect();
             if parts.len() >= 2 {
                 students.push(Student {
                     name: parts[0].to_string(),
                     present: parts[1] == "да",
-                    reason: parts.get(2).map(|s| s.to_string()),
+                    reason: parts.get(2).filter(|s| !s.is_empty()).map(|s| s.to_string()),
+                    grade: parts.get(3).filter(|s| !s.is_empty()).map(|s| s.to_string()),
                 });
             }
             i += 1;
         }
         else { i += 1; }
     }
-    Ok(Lesson { date, time, hours, topic, materials, grades, students, marked, file_id: String::new() })
+    Ok(Lesson { date, time, hours, topic, materials, students, marked, file_id: String::new() })
 }
 
 fn format_lesson(lesson: &Lesson) -> String {
@@ -366,18 +359,13 @@ fn format_lesson(lesson: &Lesson) -> String {
         out.push_str(&format!("Материалы: {}\n", lesson.materials));
     }
 
-    if lesson.grades.contains('\n') || lesson.grades.trim().is_empty() {
-        out.push_str("Отметки: <<<\n");
-        out.push_str(&lesson.grades);
-        out.push_str("\n>>>\n");
-    } else {
-        out.push_str(&format!("Отметки: {}\n", lesson.grades));
-    }
-
     out.push('\n');
     for s in &lesson.students {
-        out.push_str(&format!("{}\t{}", s.name, if s.present { "да" } else { "нет" }));
-        if let Some(r) = &s.reason { out.push_str(&format!("\t{}", r)); }
+        out.push_str(&format!("{}\t{}\t{}\t{}",
+            s.name,
+            if s.present { "да" } else { "нет" },
+            s.reason.as_deref().unwrap_or(""),
+            s.grade.as_deref().unwrap_or("")));
         out.push('\n');
     }
     out
