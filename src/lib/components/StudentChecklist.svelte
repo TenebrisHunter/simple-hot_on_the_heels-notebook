@@ -12,6 +12,11 @@
 </script>
 
 <div class="checklist">
+  <div class="header-row">
+    <span class="header-name">{$t('lessons.student')}</span>
+    <span class="header-grade">{$t('lessons.grade')}</span>
+  </div>
+
   {#each students as student, i}
     <div class="student-row" class:absent={!student.present}>
       <label class="check-cell">
@@ -21,7 +26,7 @@
 
       <input
         class="grade"
-        placeholder={$t('lessons.grade_placeholder')}
+        placeholder="4- | A+"
         bind:value={students[i].grade}
       />
 
@@ -37,6 +42,22 @@
 </div>
 
 <style>
+  .checklist { margin-bottom: 12px; }
+  .header-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 0 4px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 4px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+  }
+  .header-name { flex: 1; padding-left: 26px; }
+  .header-grade { width: 110px; text-align: center; }
+
   .student-row {
     display: flex;
     align-items: center;
@@ -67,6 +88,8 @@
     background: var(--bg-input);
     color: var(--text);
     flex-shrink: 0;
+    text-align: center;
+    font-family: monospace;
   }
   .reason {
     flex: 1;

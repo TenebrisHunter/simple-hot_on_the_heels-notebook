@@ -8,6 +8,7 @@
   import { t } from '../i18n';
   import { selectedLesson, lessonsGroup } from '../stores/ui';
   import { copyAllAsHtml, copyStudentsAsHtml, copyTopic, copyMaterials, toClipboard, toClipboardHtml } from '../utils/clipboard';
+  import { escapeKey } from '../utils/escapeAction';
 
   let copied = false;
 
@@ -36,7 +37,7 @@
 </script>
 
 {#if $selectedLesson}
-  <div class="overlay">
+  <div class="overlay" use:escapeKey={close}>
     <div class="dialog">
       <div class="header">
         <h2>{$selectedLesson.date} {$selectedLesson.time} — {$lessonsGroup}</h2>

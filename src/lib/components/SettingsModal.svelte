@@ -7,6 +7,7 @@
 <script lang="ts">
   import { t, currentLocale } from '../i18n';
   import { theme, locale } from '../stores/settings';
+  import { escapeKey } from '../utils/escapeAction';
 
   export let onClose: () => void;
 
@@ -18,7 +19,7 @@
   }
 </script>
 
-<div class="overlay">
+<div class="overlay" use:escapeKey={onClose}>
   <div class="dialog">
     <div class="header">
       <h2>⚙️ {$t('settings.title')}</h2>

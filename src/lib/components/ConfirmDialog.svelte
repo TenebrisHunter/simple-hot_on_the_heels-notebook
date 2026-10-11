@@ -6,12 +6,13 @@
 -->
 <script lang="ts">
   import { t } from '../i18n';
+  import { escapeKey } from '../utils/escapeAction';
   export let message: string;
   export let onConfirm: () => void;
   export let onCancel: () => void;
 </script>
 
-<div class="overlay">
+<div class="overlay" use:escapeKey={onCancel}>
   <div class="dialog">
     <p>{message}</p>
     <div class="buttons">

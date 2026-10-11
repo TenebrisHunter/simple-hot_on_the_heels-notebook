@@ -12,6 +12,7 @@
   import { addGroup, updateGroup } from '../stores/groups';
   import { withMinLoading, confirmMessage, confirmCallback } from '../stores/ui';
   import { hasTrashForGroup } from '../utils/storage';
+  import { escapeKey } from '../utils/escapeAction';
   import type { Group } from '../utils/storage';
 
   export let onClose: () => void;
@@ -65,7 +66,7 @@
   }
 </script>
 
-<div class="overlay">
+<div class="overlay" use:escapeKey={onClose}>
   <div class="dialog">
     <h2>{editGroup ? $t('groups.edit') : $t('groups.add')}</h2>
 

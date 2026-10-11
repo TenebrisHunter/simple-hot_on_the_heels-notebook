@@ -12,6 +12,7 @@
   import { lessonExists } from '../utils/storage';
   import type { Lesson, Student } from '../utils/storage';
   import StudentChecklist from './StudentChecklist.svelte';
+  import { escapeKey } from '../utils/escapeAction';
 
   export let groupName: string;
   export let onClose: () => void;
@@ -71,7 +72,7 @@
   }
 </script>
 
-<div class="overlay">
+<div class="overlay" use:escapeKey={onClose}>
   <div class="dialog">
     <h2>{lessonToEdit ? $t('lessons.edit') : $t('lessons.add')} — {groupName}</h2>
 
