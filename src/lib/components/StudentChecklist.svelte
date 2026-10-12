@@ -1,7 +1,11 @@
 <!--
   ============================================================
   StudentChecklist.svelte — список учеников с отметками
-  Автор: Ключенко М.А. (Омск, ОмГТУ, БИТ-211)
+  втор: люченко .. (мск, мТ, Т-211)
+  ============================================================
+  аскладка строки ученика:
+    [✓] мя  [причина, если нет]  [отметка]
+  Шапка:  | ТТ
   ============================================================
 -->
 <script lang="ts">
@@ -24,19 +28,21 @@
         <span class="name">{student.name}</span>
       </label>
 
+      <span class="reason-cell">
+        {#if !student.present}
+          <input
+            class="reason"
+            placeholder={$t('lessons.reason')}
+            bind:value={students[i].reason}
+          />
+        {/if}
+      </span>
+
       <input
         class="grade"
         placeholder="4- | A+"
         bind:value={students[i].grade}
       />
-
-      {#if !student.present}
-        <input
-          class="reason"
-          placeholder={$t('lessons.reason')}
-          bind:value={students[i].reason}
-        />
-      {/if}
     </div>
   {/each}
 </div>
@@ -79,6 +85,22 @@
     white-space: nowrap;
   }
   input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; flex-shrink: 0; }
+
+  .reason-cell {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+  }
+  .reason {
+    width: 100%;
+    padding: 4px 8px;
+    border: 1px solid var(--border-input);
+    border-radius: 4px;
+    font-size: 0.85rem;
+    background: var(--bg-input);
+    color: var(--text);
+  }
+
   .grade {
     width: 110px;
     padding: 4px 8px;
@@ -90,15 +112,5 @@
     flex-shrink: 0;
     text-align: center;
     font-family: monospace;
-  }
-  .reason {
-    flex: 1;
-    min-width: 0;
-    padding: 4px 8px;
-    border: 1px solid var(--border-input);
-    border-radius: 4px;
-    font-size: 0.85rem;
-    background: var(--bg-input);
-    color: var(--text);
   }
 </style>
