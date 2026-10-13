@@ -1,7 +1,7 @@
 {
     "$schema":  "https://schema.tauri.app/config/2",
     "productName":  "simple-hot_on_the_heels-notebook",
-    "version":  "50.0.0",
+    "version":  "61.0.0",
     "identifier":  "com.tenebrishunter.simple-hot-notebook",
     "build":  {
                   "beforeDevCommand":  "pnpm dev",
@@ -28,7 +28,7 @@
                    "targets":  "all",
                    "copyright":  "Copyright (c) 2026 Ключенко М.А. (Омск, ОмГТУ, БИТ-211)",
                    "shortDescription":  "Дневник занятий для педагога",
-                   "longDescription":  "Дневник занятий для педагога — быстрая фиксация посещаемости, часов, тем и материалов. Версия stable\u0026work_1_[v50]. Автор: Ключенко М.А., Омск, ОмГТУ, БИТ-211, 2026.",
+                   "longDescription":  "Дневник занятий для педагога — быстрая фиксация посещаемости, часов, тем и материалов. Версия stable\u0026work_1_[v61]. Автор: Ключенко М.А., Омск, ОмГТУ, БИТ-211, 2026.",
                    "icon":  [
                                 "icons/32x32.png",
                                 "icons/128x128.png",

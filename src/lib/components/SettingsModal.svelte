@@ -36,7 +36,7 @@
       {#if tab === 'about'}
         <h3>simple-hot_on_the_heels-notebook</h3>
         <p>{$t('app.title')}</p>
-        <p><strong>{$t('settings.version')}:</strong> stable&work_1_[v50]</p>
+        <p><strong>{$t('settings.version')}:</strong> stable&work_2_[v61]</p>
         <p><strong>{$t('settings.date')}:</strong> 29.09.2026</p>
         <p><strong>{$t('settings.author')}:</strong> Ключенко М.А.</p>
         <p><strong>{$t('settings.organization')}:</strong> Омск, ОмГТУ, БИТ-211</p>

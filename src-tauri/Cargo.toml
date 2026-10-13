@@ -1,6 +1,6 @@
 [package]
 name = "simple-hot-on-the-heels-notebook"
-version = "50.0.0"
+version = "61.0.0"
 description = "Дневник занятий для педагога"
 authors = ["Ключенко М.А. <misha.klyuchenko@gmail.com>"]
 license = "MIT"

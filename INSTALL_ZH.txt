@@ -5,8 +5,8 @@
 
 作者: 克柳琴科 М.А.
 鄂木斯克，鄂木斯克国立技术大学，БИТ-211，АНО ЦО ДО «马哈翁»
-版本: stable&work_1_[v50]
-日期: 29.09.2026
+版本: stable&work_2_[v61]
+日期: 14.10.2026
  
  ============================================================
   ⚠️  重要：个人数据
@@ -44,8 +44,8 @@
 ============================================================
 
 1. 从 GitHub Releases 下载安装程序：
-   - simple-hot_on_the_heels-notebook_50.0.0_x64-setup.exe
-   - 或 simple-hot_on_the_heels-notebook_50.0.0_x64_en-US.msi
+   - simple-hot_on_the_heels-notebook_61.0.0_x64-setup.exe
+   - 或 simple-hot_on_the_heels-notebook_61.0.0_x64_en-US.msi
 2. 运行 .exe 或 .msi。
 3. 按照安装程序提示操作。
 4. 从「开始」菜单启动应用。

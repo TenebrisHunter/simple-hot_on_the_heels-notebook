@@ -6,8 +6,8 @@ A lesson diary — quick recording of what happened in a lesson: attendance, hou
 
 课程日记 —— 快速记录课堂内容：出勤、学时、主题和材料，之后可转移到外部表格，例如 Yandex 表格。
 
-**Версия / Version / 版本:** stable&work_1_[v50]
-**Дата / Date / 日期:** 29.09.2026
+**Версия / Version / 版本:** stable&work_2_[v61]
+**Дата / Date / 日期:** 14.10.2026
 
 ---
 
