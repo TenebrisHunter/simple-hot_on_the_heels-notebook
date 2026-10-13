@@ -9,6 +9,7 @@
   import { selectedLesson, lessonsGroup } from '../stores/ui';
   import { copyAllAsHtml, copyStudentsAsHtml, copyTopic, copyMaterials, toClipboard, toClipboardHtml } from '../utils/clipboard';
   import { escapeKey } from '../utils/escapeAction';
+  import { formatDate } from '../utils/formatDate';
 
   let copied = false;
 
@@ -40,7 +41,7 @@
   <div class="overlay" use:escapeKey={close}>
     <div class="dialog">
       <div class="header">
-        <h2>{$selectedLesson.date} {$selectedLesson.time} — {$lessonsGroup}</h2>
+        <h2>{formatDate($selectedLesson.date)} {$selectedLesson.time} — {$lessonsGroup}</h2>
         <button class="close" on:click={close}>×</button>
       </div>
 

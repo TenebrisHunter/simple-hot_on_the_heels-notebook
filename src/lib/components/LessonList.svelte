@@ -11,6 +11,7 @@
   import { lessonsGroup, view, selectedLesson, confirmMessage, confirmCallback, selectedLessons, withMinLoading } from '../stores/ui';
   import LessonForm from './LessonForm.svelte';
   import LoadingSpinner from './LoadingSpinner.svelte';
+  import { formatDate } from '../utils/formatDate';
 
   let showForm = false;
   let editingLesson: any = null;
@@ -118,7 +119,7 @@
       <div class="lesson-item">
         <input type="checkbox" checked={$selectedLessons.has(lesson.file_id || '')} on:change={() => toggleSelect(lesson.file_id || '')} />
         <div class="info" role="button" tabindex="0" on:click={() => openView(lesson)} on:keydown={(e) => e.key === 'Enter' && openView(lesson)}>
-          <strong>{lesson.date} {lesson.time}</strong>
+          <strong>{formatDate(lesson.date)} {lesson.time}</strong>
           <span class="topic">{(lesson.topic || '—').split('\n')[0]}</span>
           <span class="hours">{lesson.hours} {$t('lessons.hours').toLowerCase()}</span>
         </div>
