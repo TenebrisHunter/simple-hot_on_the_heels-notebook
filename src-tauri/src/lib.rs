@@ -4,6 +4,7 @@
 //  Версия: stable&work_2_[v61]
 // ============================================================
 
+mod config;
 mod storage;
 mod commands;
 
@@ -32,6 +33,10 @@ pub fn run() {
             commands::delete_trash_group,
             commands::clean_old_trash,
             commands::toggle_mark,
+            commands::get_data_dir,
+            commands::set_data_dir,
+            commands::is_data_dir_configured,
+            commands::get_default_data_dir,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

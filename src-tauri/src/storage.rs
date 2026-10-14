@@ -43,19 +43,15 @@ pub struct Lesson {
 }
 
 pub fn data_dir() -> PathBuf {
-    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    path.pop();
-    path.push("data");
-    path.push("groups");
-    path
+    crate::config::get_data_dir().join("groups")
 }
 
 pub fn trash_dir() -> PathBuf {
-    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    path.pop();
-    path.push("data");
-    path.push("trash");
-    path
+    crate::config::get_data_dir().join("trash")
+}
+
+pub fn imports_dir() -> PathBuf {
+    crate::config::get_data_dir().join("imports")
 }
 
 pub fn load_groups() -> Result<Vec<Group>, String> {

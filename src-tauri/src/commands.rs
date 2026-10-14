@@ -72,3 +72,23 @@ pub fn rename_group(old_name: String, new_name: String) -> Result<(), String> {
 pub fn has_trash_for_group(group_name: String) -> Result<bool, String> {
     storage::has_trash_for_group(&group_name)
 }
+
+#[tauri::command]
+pub fn get_data_dir() -> Result<String, String> {
+    Ok(crate::config::get_data_dir().to_string_lossy().to_string())
+}
+
+#[tauri::command]
+pub fn set_data_dir(path: String) -> Result<(), String> {
+    crate::config::set_data_dir(&path)
+}
+
+#[tauri::command]
+pub fn is_data_dir_configured() -> Result<bool, String> {
+    Ok(crate::config::is_data_dir_configured())
+}
+
+#[tauri::command]
+pub fn get_default_data_dir() -> Result<String, String> {
+    Ok(crate::config::config_dir().join("data").to_string_lossy().to_string())
+}

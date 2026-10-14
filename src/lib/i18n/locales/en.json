@@ -66,7 +66,14 @@
     "theme_title": "Theme",
     "theme_light": "Light", "theme_dark": "Dark",
     "lang_title": "Interface language",
-    "lang_ru": "Русский", "lang_en": "English", "lang_zh": "中文 (soon)"
+    "lang_ru": "Русский", "lang_en": "English", "lang_zh": "中文 (soon)",
+    "tab_data": "Data folder",
+    "data_title": "Data folder",
+    "data_hint": "Groups, lessons and trash are stored here. Restart the app after changing the folder.",
+    "data_change": "Change folder",
+    "data_open": "Open in explorer",
+    "data_reset": "Default",
+    "data_restart": "Restart the app for changes to take effect."
   },
   "common": {
     "save": "Save", "cancel": "Cancel", "delete": "Delete",

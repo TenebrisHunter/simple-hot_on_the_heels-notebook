@@ -65,3 +65,22 @@ export async function renameGroup(oldName: string, newName: string): Promise<voi
 export async function hasTrashForGroup(groupName: string): Promise<boolean> {
   return await invoke('has_trash_for_group', { groupName });
 }
+
+// ============================================================
+//  Папка данных
+// ============================================================
+export async function getDataDir(): Promise<string> {
+  return await invoke('get_data_dir');
+}
+
+export async function setDataDir(path: string): Promise<void> {
+  await invoke('set_data_dir', { path });
+}
+
+export async function isDataDirConfigured(): Promise<boolean> {
+  return await invoke('is_data_dir_configured');
+}
+
+export async function getDefaultDataDir(): Promise<string> {
+  return await invoke('get_default_data_dir');
+}
