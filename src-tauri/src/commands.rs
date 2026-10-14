@@ -122,3 +122,37 @@ pub fn open_folder(path: String) -> Result<(), String> {
     }
     Ok(())
 }
+
+// ============================================================
+//  Настройки трея и уведомлений
+// ============================================================
+
+#[tauri::command]
+pub fn get_tray_enabled() -> Result<bool, String> {
+    Ok(crate::config::is_tray_enabled())
+}
+
+#[tauri::command]
+pub fn set_tray_enabled(enabled: bool) -> Result<(), String> {
+    crate::config::set_tray_enabled(enabled)
+}
+
+#[tauri::command]
+pub fn get_notifications_enabled() -> Result<bool, String> {
+    Ok(crate::config::is_notifications_enabled())
+}
+
+#[tauri::command]
+pub fn set_notifications_enabled(enabled: bool) -> Result<(), String> {
+    crate::config::set_notifications_enabled(enabled)
+}
+
+#[tauri::command]
+pub fn get_notification_time() -> Result<String, String> {
+    Ok(crate::config::get_notification_time())
+}
+
+#[tauri::command]
+pub fn set_notification_time(time: String) -> Result<(), String> {
+    crate::config::set_notification_time(&time)
+}
