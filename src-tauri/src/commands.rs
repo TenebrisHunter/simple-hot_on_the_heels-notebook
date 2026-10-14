@@ -1,6 +1,6 @@
 // ============================================================
 //  commands.rs — Tauri-команды (мост между UI и storage.rs)
-//  Автор: Ключенко М.А. (Омск, ОмГТУ, БИТ-211)
+//  Автор: Ключенко М.А. (Омск, ОмГТУ, ИБа-261)
 // ============================================================
 //  Что делает:
 //    - Регистрирует публичные команды для вызова из Svelte.
@@ -91,4 +91,34 @@ pub fn is_data_dir_configured() -> Result<bool, String> {
 #[tauri::command]
 pub fn get_default_data_dir() -> Result<String, String> {
     Ok(crate::config::config_dir().join("data").to_string_lossy().to_string())
+}
+
+#[tauri::command]
+pub fn open_folder(path: String) -> Result<(), String> {
+    let p = std::path::PathBuf::from(&path);
+    if !p.exists() {
+        return Err("Папка не существует".to_string());
+    }
+    #[cfg(target_os = "windows")]
+    {
+        std::process::Command::new("explorer")
+            .arg(&path)
+            .spawn()
+            .map_err(|e| e.to_string())?;
+    }
+    #[cfg(target_os = "macos")]
+    {
+        std::process::Command::new("open")
+            .arg(&path)
+            .spawn()
+            .map_err(|e| e.to_string())?;
+    }
+    #[cfg(target_os = "linux")]
+    {
+        std::process::Command::new("xdg-open")
+            .arg(&path)
+            .spawn()
+            .map_err(|e| e.to_string())?;
+    }
+    Ok(())
 }

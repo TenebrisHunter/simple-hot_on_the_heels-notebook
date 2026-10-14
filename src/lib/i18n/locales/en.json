@@ -2,7 +2,7 @@
   "app": { "title": "Lesson Diary" },
   "nav": { "groups": "Groups", "lessons": "Lessons", "import": "Import", "trash": "Trash", "settings": "Settings" },
   "footer": {
-    "authors": "Lesson Diary · Omsk, OmSTU, BIT-211 · Klyuchenko M.A. · 2026 · stable&work_2_[v61]",
+    "authors": "Lesson Diary · Omsk, OmSTU, IBa-261 · Klyuchenko M.A. · 2026 · stable&work_2_[v61]",
     "warning": "⚠️ Data is stored locally and in plain text. Enter personal data responsibly."
   },
   "groups": {

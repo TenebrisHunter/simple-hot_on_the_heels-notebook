@@ -1,7 +1,7 @@
 <!--
   ============================================================
   SettingsModal.svelte — окно настроек
-  Автор: Ключенко М.А. (Омск, ОмГТУ, БИТ-211)
+  Автор: Ключенко М.А. (Омск, ОмГТУ, ИБа-261)
   Версия: stable&work_2_[v61]
   ============================================================
 -->
@@ -10,7 +10,7 @@
   import { t, currentLocale } from '../i18n';
   import { theme, locale } from '../stores/settings';
   import { escapeKey } from '../utils/escapeAction';
-  import { getDataDir, setDataDir, getDefaultDataDir } from '../utils/storage';
+  import { getDataDir, setDataDir, getDefaultDataDir, openFolder } from '../utils/storage';
   import { open } from '@tauri-apps/plugin-dialog';
   import { invoke } from '@tauri-apps/api/core';
 
@@ -67,7 +67,7 @@
 
   async function openInExplorer() {
     try {
-      await invoke('plugin:opener|open_path', { path: dataDir });
+      await openFolder(dataDir);
     } catch (e) {
       console.error(e);
     }
@@ -95,7 +95,7 @@
         <p><strong>{$t('settings.version')}:</strong> stable&work_2_[v61]</p>
         <p><strong>{$t('settings.date')}:</strong> 14.10.2026</p>
         <p><strong>{$t('settings.author')}:</strong> Ключенко М.А.</p>
-        <p><strong>{$t('settings.organization')}:</strong> Омск, ОмГТУ, БИТ-211</p>
+        <p><strong>{$t('settings.organization')}:</strong> Омск, ОмГТУ, ИБа-261</p>
         <p><strong>{$t('settings.license')}:</strong> MIT</p>
       {:else if tab === 'appearance'}
         <h3>{$t('settings.theme_title')}</h3>

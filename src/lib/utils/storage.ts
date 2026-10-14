@@ -1,6 +1,6 @@
 // ============================================================
 //  storage.ts — обёртка над Tauri-командами
-//  Автор: Ключенко М.А. (Омск, ОмГТУ, БИТ-211)
+//  Автор: Ключенко М.А. (Омск, ОмГТУ, ИБа-261)
 // ============================================================
 //  Что делает:
 //    - Типы: Student, Group, Lesson.
@@ -83,4 +83,8 @@ export async function isDataDirConfigured(): Promise<boolean> {
 
 export async function getDefaultDataDir(): Promise<string> {
   return await invoke('get_default_data_dir');
+}
+
+export async function openFolder(path: string): Promise<void> {
+  await invoke('open_folder', { path });
 }

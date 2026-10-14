@@ -1,6 +1,6 @@
 // ============================================================
 //  simple-hot_on_the_heels-notebook — ядро
-//  Автор: Ключенко М.А. (Омск, ОмГТУ, БИТ-211)
+//  Автор: Ключенко М.А. (Омск, ОмГТУ, ИБа-261)
 //  Версия: stable&work_2_[v61]
 // ============================================================
 
@@ -37,6 +37,7 @@ pub fn run() {
             commands::set_data_dir,
             commands::is_data_dir_configured,
             commands::get_default_data_dir,
+            commands::open_folder,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

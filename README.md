@@ -328,18 +328,18 @@ MIT — см. файл LICENSE / see LICENSE / 参见 LICENSE 文件。
 
 **RU:**
 Ключенко М.А.
-Омск, ОмГТУ, БИТ-211
+Омск, ОмГТУ, ИБа-261
 АНО ЦО ДО «Махаон»
 (сделал данную программу, потому что я ненавижу Яндекс.Таблицы)
 
 **EN:**
 Klyuchenko M.A.
-Omsk, OmSTU, BIT-211
+Omsk, OmSTU, IBa-261
 ANO TSO DO "Makhaon"
 (Made this program because I hate Yandex Sheets)
 
 **ZH:**
 克柳琴科 М.А.
-鄂木斯克，鄂木斯克国立技术大学，БИТ-211
+鄂木斯克，鄂木斯克国立技术大学，ИБа-261
 АНО ЦО ДО «马哈翁»
 （开发本程序是因为我讨厌 Yandex 表格）

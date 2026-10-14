@@ -94,6 +94,9 @@
      НЕ делать расписание на неделю — только простые напоминания.
      Это отдельный этап — после папки данных.
 
+     ПОДРОБНОЕ ОПИСАНИЕ ЛОГИКИ:
+     См. docs-tray-notifications.txt
+
      Настройка tray в tauri.conf.json:
        "trayIcon": {
          "iconPath": "icons/icon.png",
