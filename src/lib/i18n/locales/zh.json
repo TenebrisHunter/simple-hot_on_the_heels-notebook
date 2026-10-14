@@ -68,12 +68,22 @@
     "lang_title": "界面语言",
     "lang_ru": "Русский", "lang_en": "English", "lang_zh": "中文",
     "tab_data": "数据文件夹",
+    "tab_reminders": "提醒",
     "data_title": "数据文件夹",
     "data_hint": "小组、课程和回收站存储在这里。更改文件夹后请重启应用。",
     "data_change": "更改文件夹",
     "data_open": "在资源管理器中打开",
     "data_reset": "默认",
-    "data_restart": "请重启应用以使更改生效。"
+    "data_restart": "请重启应用以使更改生效。",
+    "tray_title": "系统托盘",
+    "tray_hint": "启用后，应用不会因点击关闭按钮而退出，而是最小化到托盘。要完全退出，请使用托盘菜单 → 退出。",
+    "tray_enabled": "最小化到托盘",
+    "reminders_title": "提醒",
+    "reminders_hint": "创建提醒：选择时间和星期几。系统通知将会显示。",
+    "reminder_add": "添加提醒",
+    "reminder_delete": "删除",
+    "reminder_empty": "暂无提醒。",
+    "day_1": "周一", "day_2": "周二", "day_3": "周三", "day_4": "周四", "day_5": "周五", "day_6": "周六", "day_7": "周日"
   },
   "common": {
     "save": "保存", "cancel": "取消", "delete": "删除",

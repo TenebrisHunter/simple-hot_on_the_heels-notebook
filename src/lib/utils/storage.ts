@@ -88,3 +88,30 @@ export async function getDefaultDataDir(): Promise<string> {
 export async function openFolder(path: string): Promise<void> {
   await invoke('open_folder', { path });
 }
+
+// ============================================================
+//  Напоминания
+// ============================================================
+export interface Reminder {
+  id: string;
+  time: string;
+  days: number[];    // 1=Пн ... 7=Вс
+  enabled: boolean;
+  text?: string;
+}
+
+export async function getReminders(): Promise<Reminder[]> {
+  return await invoke('get_reminders');
+}
+
+export async function saveReminders(reminders: Reminder[]): Promise<void> {
+  await invoke('save_reminders', { reminders });
+}
+
+export async function getTrayEnabled(): Promise<boolean> {
+  return await invoke('get_tray_enabled');
+}
+
+export async function setTrayEnabled(enabled: boolean): Promise<void> {
+  await invoke('set_tray_enabled', { enabled });
+}

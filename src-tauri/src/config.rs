@@ -4,18 +4,29 @@
 //  Версия: stable&work_2_[v61]
 // ============================================================
 //  Что хранит:
-//    - data_dir              — путь к папке данных
-//    - tray_enabled          — сворачивать в трей?
-//    - notifications_enabled — показывать напоминания?
-//    - notification_time     — время напоминания (HH:MM)
-//    - last_notified_date    — дата последнего уведомления
+//    - data_dir        — путь к папке данных
+//    - tray_enabled    — сворачивать в трей?
+//    - reminders       — список напоминаний (время + дни)
+//    - last_notified   — { id: дата } последнего уведомления
 //  Где хранит:
 //    - %APPDATA%\simple-hot_on_the_heels-notebook\config.json
 // ============================================================
 
 use std::fs;
 use std::path::PathBuf;
+use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
+
+/// Напоминание — время + дни недели + вкл/выкл
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct Reminder {
+    pub id: String,
+    pub time: String,          // "HH:MM"
+    pub days: Vec<u32>,        // 1=Пн ... 7=Вс
+    pub enabled: bool,
+    #[serde(default)]
+    pub text: Option<String>,  // опциональный текст
+}
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Config {
@@ -24,23 +35,18 @@ pub struct Config {
     #[serde(default)]
     pub tray_enabled: bool,
     #[serde(default)]
-    pub notifications_enabled: bool,
-    #[serde(default = "default_notification_time")]
-    pub notification_time: String,
+    pub reminders: Vec<Reminder>,
     #[serde(default)]
-    pub last_notified_date: Option<String>,
+    pub last_notified: HashMap<String, String>,
 }
-
-fn default_notification_time() -> String { "19:00".to_string() }
 
 impl Default for Config {
     fn default() -> Self {
         Config {
             data_dir: None,
             tray_enabled: false,
-            notifications_enabled: false,
-            notification_time: default_notification_time(),
-            last_notified_date: None,
+            reminders: Vec::new(),
+            last_notified: HashMap::new(),
         }
     }
 }
@@ -69,6 +75,8 @@ pub fn save_config(config: &Config) -> Result<(), String> {
     fs::write(config_file(), json).map_err(|e| e.to_string())?;
     Ok(())
 }
+
+// --- Папка данных ---
 
 pub fn get_data_dir() -> PathBuf {
     let config = load_config();
@@ -99,6 +107,8 @@ pub fn is_data_dir_configured() -> bool {
     false
 }
 
+// --- Трей ---
+
 pub fn is_tray_enabled() -> bool {
     load_config().tray_enabled
 }
@@ -109,38 +119,24 @@ pub fn set_tray_enabled(enabled: bool) -> Result<(), String> {
     save_config(&config)
 }
 
-pub fn is_notifications_enabled() -> bool {
-    load_config().notifications_enabled
+// --- Напоминания ---
+
+pub fn get_reminders() -> Vec<Reminder> {
+    load_config().reminders
 }
 
-pub fn set_notifications_enabled(enabled: bool) -> Result<(), String> {
+pub fn save_reminders(reminders: Vec<Reminder>) -> Result<(), String> {
     let mut config = load_config();
-    config.notifications_enabled = enabled;
+    config.reminders = reminders;
     save_config(&config)
 }
 
-pub fn get_notification_time() -> String {
-    load_config().notification_time
+pub fn get_last_notified() -> HashMap<String, String> {
+    load_config().last_notified
 }
 
-pub fn set_notification_time(time: &str) -> Result<(), String> {
-    // Проверяем формат HH:MM
-    let parts: Vec<&str> = time.split(':').collect();
-    if parts.len() != 2 {
-        return Err("Неверный формат времени (нужно HH:MM)".to_string());
-    }
-    let h: u32 = parts[0].parse().map_err(|_| "Неверный час".to_string())?;
-    let m: u32 = parts[1].parse().map_err(|_| "Неверные минуты".to_string())?;
-    if h > 23 || m > 59 {
-        return Err("Час 0-23, минуты 0-59".to_string());
-    }
+pub fn set_last_notified(id: &str, date: &str) -> Result<(), String> {
     let mut config = load_config();
-    config.notification_time = time.to_string();
-    save_config(&config)
-}
-
-pub fn set_last_notified_date(date: &str) -> Result<(), String> {
-    let mut config = load_config();
-    config.last_notified_date = Some(date.to_string());
+    config.last_notified.insert(id.to_string(), date.to_string());
     save_config(&config)
 }

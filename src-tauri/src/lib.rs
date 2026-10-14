@@ -7,6 +7,7 @@
 mod config;
 mod storage;
 mod commands;
+mod reminders;
 
 use tauri::Emitter;
 use tauri::{
@@ -69,6 +70,9 @@ pub fn run() {
                 });
             }
 
+            // --- Запуск фонового цикла напоминаний ---
+            reminders::start_loop(app.handle().clone());
+
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -98,10 +102,10 @@ pub fn run() {
             commands::open_folder,
             commands::get_tray_enabled,
             commands::set_tray_enabled,
-            commands::get_notifications_enabled,
-            commands::set_notifications_enabled,
-            commands::get_notification_time,
-            commands::set_notification_time,
+            commands::get_reminders,
+            commands::save_reminders,
+            commands::get_last_notified,
+            commands::set_last_notified,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

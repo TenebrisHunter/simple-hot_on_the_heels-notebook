@@ -17,6 +17,7 @@
   import { view, confirmMessage, confirmCallback } from './lib/stores/ui';
   import { theme } from './lib/stores/settings';
   import { onMount } from 'svelte';
+  import { listen } from '@tauri-apps/api/event';
 
   let showSettings = false;
 

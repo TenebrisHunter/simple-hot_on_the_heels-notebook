@@ -1,17 +1,13 @@
 // ============================================================
 //  commands.rs — Tauri-команды (мост между UI и storage.rs)
 //  Автор: Ключенко М.А. (Омск, ОмГТУ, ИБа-261)
-// ============================================================
-//  Что делает:
-//    - Регистрирует публичные команды для вызова из Svelte.
-//    - Каждая команда — тонкая обёртка над storage.rs.
-//  Как добавить новую:
-//    1. Написать функцию в storage.rs.
-//    2. Добавить #[tauri::command] здесь.
-//    3. Зарегистрировать в lib.rs (invoke_handler).
+//  Версия: stable&work_2_[v61]
 // ============================================================
 
 use crate::storage::{self, Group, Lesson};
+use crate::config::{self, Reminder};
+
+// --- Группы ---
 
 #[tauri::command]
 pub fn load_groups() -> Result<Vec<Group>, String> { storage::load_groups() }
@@ -21,6 +17,18 @@ pub fn save_group(group: Group) -> Result<(), String> { storage::save_group(&gro
 
 #[tauri::command]
 pub fn delete_group(name: String) -> Result<(), String> { storage::delete_group(&name) }
+
+#[tauri::command]
+pub fn rename_group(old_name: String, new_name: String) -> Result<(), String> {
+    storage::rename_group(&old_name, &new_name)
+}
+
+#[tauri::command]
+pub fn has_trash_for_group(group_name: String) -> Result<bool, String> {
+    storage::has_trash_for_group(&group_name)
+}
+
+// --- Занятия ---
 
 #[tauri::command]
 pub fn load_lessons(group_name: String) -> Result<Vec<Lesson>, String> { storage::load_lessons(&group_name) }
@@ -38,7 +46,14 @@ pub fn delete_lesson(group_name: String, file_id: String) -> Result<(), String> 
 pub fn delete_lessons(group_name: String, file_ids: Vec<String>) -> Result<usize, String> { storage::delete_lessons(&group_name, file_ids) }
 
 #[tauri::command]
+pub fn toggle_mark(group_name: String, lesson: Lesson) -> Result<(), String> { storage::toggle_mark(&group_name, &lesson) }
+
+// --- Импорт ---
+
+#[tauri::command]
 pub fn import_from_folder(folder_path: String, group_name: String) -> Result<usize, String> { storage::import_from_folder(&folder_path, &group_name) }
+
+// --- Корзина ---
 
 #[tauri::command]
 pub fn list_trash_lessons(group_name: String) -> Result<Vec<String>, String> { storage::list_trash_lessons(&group_name) }
@@ -61,36 +76,26 @@ pub fn delete_trash_group(trash_name: String) -> Result<(), String> { storage::d
 #[tauri::command]
 pub fn clean_old_trash() -> Result<(), String> { storage::clean_old_trash() }
 
-#[tauri::command]
-pub fn toggle_mark(group_name: String, lesson: Lesson) -> Result<(), String> { storage::toggle_mark(&group_name, &lesson) }
-#[tauri::command]
-pub fn rename_group(old_name: String, new_name: String) -> Result<(), String> {
-    storage::rename_group(&old_name, &new_name)
-}
-
-#[tauri::command]
-pub fn has_trash_for_group(group_name: String) -> Result<bool, String> {
-    storage::has_trash_for_group(&group_name)
-}
+// --- Папка данных ---
 
 #[tauri::command]
 pub fn get_data_dir() -> Result<String, String> {
-    Ok(crate::config::get_data_dir().to_string_lossy().to_string())
+    Ok(config::get_data_dir().to_string_lossy().to_string())
 }
 
 #[tauri::command]
 pub fn set_data_dir(path: String) -> Result<(), String> {
-    crate::config::set_data_dir(&path)
+    config::set_data_dir(&path)
 }
 
 #[tauri::command]
 pub fn is_data_dir_configured() -> Result<bool, String> {
-    Ok(crate::config::is_data_dir_configured())
+    Ok(config::is_data_dir_configured())
 }
 
 #[tauri::command]
 pub fn get_default_data_dir() -> Result<String, String> {
-    Ok(crate::config::config_dir().join("data").to_string_lossy().to_string())
+    Ok(config::config_dir().join("data").to_string_lossy().to_string())
 }
 
 #[tauri::command]
@@ -123,36 +128,36 @@ pub fn open_folder(path: String) -> Result<(), String> {
     Ok(())
 }
 
-// ============================================================
-//  Настройки трея и уведомлений
-// ============================================================
+// --- Трей ---
 
 #[tauri::command]
 pub fn get_tray_enabled() -> Result<bool, String> {
-    Ok(crate::config::is_tray_enabled())
+    Ok(config::is_tray_enabled())
 }
 
 #[tauri::command]
 pub fn set_tray_enabled(enabled: bool) -> Result<(), String> {
-    crate::config::set_tray_enabled(enabled)
+    config::set_tray_enabled(enabled)
+}
+
+// --- Напоминания ---
+
+#[tauri::command]
+pub fn get_reminders() -> Result<Vec<Reminder>, String> {
+    Ok(config::get_reminders())
 }
 
 #[tauri::command]
-pub fn get_notifications_enabled() -> Result<bool, String> {
-    Ok(crate::config::is_notifications_enabled())
+pub fn save_reminders(reminders: Vec<Reminder>) -> Result<(), String> {
+    config::save_reminders(reminders)
 }
 
 #[tauri::command]
-pub fn set_notifications_enabled(enabled: bool) -> Result<(), String> {
-    crate::config::set_notifications_enabled(enabled)
+pub fn get_last_notified() -> Result<std::collections::HashMap<String, String>, String> {
+    Ok(config::get_last_notified())
 }
 
 #[tauri::command]
-pub fn get_notification_time() -> Result<String, String> {
-    Ok(crate::config::get_notification_time())
-}
-
-#[tauri::command]
-pub fn set_notification_time(time: String) -> Result<(), String> {
-    crate::config::set_notification_time(&time)
+pub fn set_last_notified(id: String, date: String) -> Result<(), String> {
+    config::set_last_notified(&id, &date)
 }

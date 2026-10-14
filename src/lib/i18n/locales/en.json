@@ -68,12 +68,22 @@
     "lang_title": "Interface language",
     "lang_ru": "Русский", "lang_en": "English", "lang_zh": "中文 (soon)",
     "tab_data": "Data folder",
+    "tab_reminders": "Reminders",
     "data_title": "Data folder",
     "data_hint": "Groups, lessons and trash are stored here. Restart the app after changing the folder.",
     "data_change": "Change folder",
     "data_open": "Open in explorer",
     "data_reset": "Default",
-    "data_restart": "Restart the app for changes to take effect."
+    "data_restart": "Restart the app for changes to take effect.",
+    "tray_title": "System tray",
+    "tray_hint": "When enabled, the app does not close on the X button but minimizes to tray. To fully exit, use the tray menu → Quit.",
+    "tray_enabled": "Minimize to tray",
+    "reminders_title": "Reminders",
+    "reminders_hint": "Create reminders: pick time and days of the week. A system notification will appear.",
+    "reminder_add": "Add reminder",
+    "reminder_delete": "Delete",
+    "reminder_empty": "No reminders yet.",
+    "day_1": "Mon", "day_2": "Tue", "day_3": "Wed", "day_4": "Thu", "day_5": "Fri", "day_6": "Sat", "day_7": "Sun"
   },
   "common": {
     "save": "Save", "cancel": "Cancel", "delete": "Delete",
