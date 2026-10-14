@@ -12,7 +12,7 @@ mod reminders;
 use tauri::Emitter;
 use tauri::{
     menu::{Menu, MenuItem},
-    tray::TrayIconBuilder,
+    tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
     Manager, WindowEvent,
 };
 
@@ -23,7 +23,7 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_notification::init())
         .setup(|app| {
-            // --- Меню трея ---
+            // --- Меню трея (только для ПКМ) ---
             let open_item = MenuItem::with_id(app, "open", "Открыть", true, None::<&str>)?;
             let settings_item = MenuItem::with_id(app, "settings", "Настройки", true, None::<&str>)?;
             let quit_item = MenuItem::with_id(app, "quit", "Выход", true, None::<&str>)?;
@@ -33,26 +33,43 @@ pub fn run() {
                 .icon(app.default_window_icon().unwrap().clone())
                 .tooltip("Дневник занятий")
                 .menu(&menu)
-                .show_menu_on_left_click(false)
+                .menu_on_left_click(false)
                 .on_menu_event(|app, event| {
                     match event.id.as_ref() {
                         "open" => {
                             if let Some(window) = app.get_webview_window("main") {
                                 let _ = window.show();
+                                let _ = window.unminimize();
                                 let _ = window.set_focus();
                             }
                         }
                         "settings" => {
                             if let Some(window) = app.get_webview_window("main") {
                                 let _ = window.show();
+                                let _ = window.unminimize();
                                 let _ = window.set_focus();
                                 let _ = window.emit("open-settings", ());
                             }
                         }
-                        "quit" => {
-                            app.exit(0);
-                        }
+                        "quit" => { app.exit(0); }
                         _ => {}
+                    }
+                })
+                .on_tray_icon_event(|tray, event| {
+                    if let TrayIconEvent::Click {
+                        button: MouseButton::Left,
+                        button_state,
+                        ..
+                    } = event
+                    {
+                        if matches!(button_state, MouseButtonState::Up | MouseButtonState::Down) {
+                            let app = tray.app_handle();
+                            if let Some(window) = app.get_webview_window("main") {
+                                let _ = window.show();
+                                let _ = window.unminimize();
+                                let _ = window.set_focus();
+                            }
+                        }
                     }
                 })
                 .build(app)?;
