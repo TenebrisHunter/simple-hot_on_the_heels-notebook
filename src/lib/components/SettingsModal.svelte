@@ -251,7 +251,7 @@
 
 <style>
   .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 1200; }
-  .dialog { background: var(--bg-card); color: var(--text); padding: 24px; border-radius: 8px; max-width: 700px; width: 90%; max-height: 85vh; display: flex; flex-direction: column; }
+  .dialog { background: var(--bg-card); color: var(--text); padding: 24px; border-radius: 8px; max-width: 700px; width: 90%; height: 600px; min-height: 400px; max-height: 85vh; display: flex; flex-direction: column; }
   .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
   h2 { margin: 0; font-size: 1.2rem; }
   h3 { margin: 0 0 12px; font-size: 1rem; }
@@ -261,7 +261,7 @@
   .tabs { display: flex; gap: 6px; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px; flex-wrap: wrap; }
   .tabs button { background: none; border: none; padding: 8px 12px; cursor: pointer; border-radius: 4px; font-size: 0.9rem; color: var(--text-secondary); }
   .tabs button.active { background: var(--accent); color: white; }
-  .content { overflow-y: auto; flex: 1; }
+  .content { overflow-y: auto; flex: 1; padding-right: 4px; }
   .radio-group { display: flex; flex-direction: column; gap: 8px; }
   .radio { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px; border-radius: 4px; font-size: 0.95rem; }
   .radio:hover { background: var(--bg-hover); }
