@@ -1,15 +1,8 @@
 <!--
   ============================================================
   SettingsModal.svelte — окно настроек
-  Автор: Ключенко М.А. (Омск, ОмГТУ, ИБа-261)
-  Версия: stable&work_2_[v61]
-  ============================================================
-  Разделы:
-    - О проекте
-    - Тема
-    - Язык
-    - Папка данных
-    - Напоминания (трей + список напоминаний)
+  втор: люченко .. (мск, мТ, а-261)
+  ерсия: stable&work_2_[v61]
   ============================================================
 -->
 <script lang="ts">
@@ -28,31 +21,21 @@
 
   let tab: 'about' | 'appearance' | 'language' | 'data' | 'reminders' = 'about';
 
-  // --- Папка данных ---
+  // --- апка данных ---
   let dataDir = '';
   let defaultDir = '';
   let changing = false;
   let needsRestart = false;
 
-  async function copyGithubUrl() {
-    try {
-      await navigator.clipboard.writeText(githubUrl);
-      githubCopied = true;
-      setTimeout(() => githubCopied = false, 1500);
-    } catch (e) { console.error(e); }
-  }
-
-  async function openGithubUrl() {
-    try { await openUrl(githubUrl); } catch (e) { console.error(e); }
-  }
-
   // --- Трей ---
   let trayEnabled = false;
-  const githubUrl = 'https://github.com/TenebrisHunter/simple-hot_on_the_heels-notebook';
-  let githubCopied = false;
   let trayChanged = false;
 
-  // --- Напоминания ---
+  // --- GitHub ---
+  const githubUrl = 'https://github.com/TenebrisHunter/simple-hot_on_the_heels-notebook';
+  let githubCopied = false;
+
+  // --- апоминания ---
   let reminders: Reminder[] = [];
 
   onMount(async () => {
@@ -62,7 +45,7 @@
       trayEnabled = await getTrayEnabled();
       reminders = await getReminders();
     } catch (e) {
-      console.error('Ошибка загрузки настроек:', e);
+      console.error('шибка загрузки настроек:', e);
     }
   });
 
@@ -71,7 +54,7 @@
     currentLocale.set(l);
   }
 
-  // --- Папка данных ---
+  // --- апка данных ---
   async function pickFolder() {
     const { open } = await import('@tauri-apps/plugin-dialog');
     const selected = await open({ directory: true, multiple: false });
@@ -82,7 +65,7 @@
         dataDir = selected;
         needsRestart = true;
       } catch (e) {
-        alert('Ошибка: ' + e);
+        alert('шибка: ' + e);
       } finally {
         changing = false;
       }
@@ -96,7 +79,7 @@
       dataDir = defaultDir;
       needsRestart = true;
     } catch (e) {
-      alert('Ошибка: ' + e);
+      alert('шибка: ' + e);
     } finally {
       changing = false;
     }
@@ -106,6 +89,7 @@
     try { await openFolder(dataDir); } catch (e) { console.error(e); }
   }
 
+  // --- GitHub ---
   async function copyGithubUrl() {
     try {
       await navigator.clipboard.writeText(githubUrl);
@@ -125,7 +109,7 @@
     trayChanged = true;
   }
 
-  // --- Напоминания ---
+  // --- апоминания ---
   function newId(): string {
     return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
   }
@@ -185,9 +169,20 @@
         <p>{$t('app.title')}</p>
         <p><strong>{$t('settings.version')}:</strong> stable&work_2_[v61]</p>
         <p><strong>{$t('settings.date')}:</strong> 14.10.2026</p>
-        <p><strong>{$t('settings.author')}:</strong> Ключенко М.А.</p>
-        <p><strong>{$t('settings.organization')}:</strong> Омск, ОмГТУ, ИБа-261, АНО ЦО ДО «Махаон»</p>
+        <p><strong>{$t('settings.author')}:</strong> люченко ..</p>
+        <p><strong>{$t('settings.organization')}:</strong> мск, мТ, а-261,    «ахаон»</p>
         <p><strong>{$t('settings.license')}:</strong> MIT</p>
+
+        <h3>🔗 {$t('settings.github_title')}</h3>
+        <div class="github-block">
+          <code class="github-url">{githubUrl}</code>
+          <div class="github-buttons">
+            <button on:click={copyGithubUrl}>
+              {#if githubCopied}✅ {$t('settings.github_copied')}{:else}📋 {$t('settings.github_copy')}{/if}
+            </button>
+            <button on:click={openGithubUrl}>🔗 {$t('settings.github_open')}</button>
+          </div>
+        </div>
 
       {:else if tab === 'appearance'}
         <h3>{$t('settings.theme_title')}</h3>
@@ -358,38 +353,8 @@
     cursor: pointer;
     font-size: 0.9rem;
     width: 100%;
-  }  .github-block {
-    margin-top: 8px;
-    margin-bottom: 16px;
   }
-  .github-url {
-    display: block;
-    padding: 10px 12px;
-    background: var(--bg-muted);
-    border-radius: 4px;
-    font-family: monospace;
-    font-size: 0.8rem;
-    word-break: break-all;
-    color: var(--text);
-    margin-bottom: 8px;
-  }
-  .github-buttons {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .github-buttons button {
-    background: var(--accent);
-    color: white;
-    border: none;
-    padding: 8px 14px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.85rem;
-  }
-  .github-buttons button:hover {
-    background: var(--accent-hover);
-  }
+
   .github-block {
     margin-top: 8px;
     margin-bottom: 16px;
@@ -421,4 +386,5 @@
   }
   .github-buttons button:hover {
     background: var(--accent-hover);
-  }</style>
+  }
+</style>
