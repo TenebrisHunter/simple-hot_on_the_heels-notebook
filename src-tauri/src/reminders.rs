@@ -63,7 +63,7 @@ fn check_and_notify(app: &AppHandle) {
         // Показываем уведомление
         let result = app.notification()
             .builder()
-            .title("Дневник занятий")
+            .title("Заметки занятий")
             .body(&text)
             .show();
 

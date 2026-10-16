@@ -1,12 +1,12 @@
-Дневник занятий — быстрая фиксация того, что было на занятии:
+Заметки занятий — быстрая фиксация того, что было на занятии:
 посещаемости, часов, тем и материалов с последующей возможностью
 перенести в стороннюю таблицу. Например, в Яндекс.Таблицы.
 
-A lesson diary — quick recording of what happened in a lesson:
+A Lesson Notes — quick recording of what happened in a lesson:
 attendance, hours, topics and materials, with the ability to
 transfer them to an external table. For example, to Yandex Sheets.
 
-课程日记 —— 快速记录课堂内容：出勤、学时、主题和材料，
+课程笔记 —— 快速记录课堂内容：出勤、学时、主题和材料，
 之后可转移到外部表格，例如 Yandex 表格。
 
 Автор / Author / 作者: Ключенко М.А. / Klyuchenko M.A. / 克柳琴科 М.А.

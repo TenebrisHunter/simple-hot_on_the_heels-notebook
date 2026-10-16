@@ -1,8 +1,8 @@
 {
-  "app": { "title": "Lesson Diary" },
+  "app": { "title": "Lesson Notes" },
   "nav": { "groups": "Groups", "lessons": "Lessons", "import": "Import", "trash": "Trash", "settings": "Settings" },
   "footer": {
-    "authors": "Lesson Diary · Omsk, OmSTU, IBa-261 · Klyuchenko M.A. · 2026 · stable&work_2_[v61]",
+    "authors": "Lesson Notes · Omsk, OmSTU, IBa-261, ANO TSO DO «Makhaon» · Klyuchenko M.A. · 2026 · stable&work_2_[v61]",
     "warning": "⚠️ Data is stored locally and in plain text. Enter personal data responsibly."
   },
   "groups": {
@@ -63,6 +63,10 @@
     "tab_about": "About", "tab_appearance": "Theme", "tab_language": "Language",
     "version": "Version", "date": "Date", "author": "Author",
     "organization": "Organization", "license": "License",
+    "github_title": "GitHub",
+    "github_copy": "Copy",
+    "github_open": "Open in browser",
+    "github_copied": "Copied",
     "theme_title": "Theme",
     "theme_light": "Light", "theme_dark": "Dark",
     "lang_title": "Interface language",
