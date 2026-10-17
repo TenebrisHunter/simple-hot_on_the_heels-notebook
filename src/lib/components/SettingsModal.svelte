@@ -180,7 +180,7 @@
             <button on:click={copyGithubUrl}>
               {#if githubCopied}✅ {$t('settings.github_copied')}{:else}📋 {$t('settings.github_copy')}{/if}
             </button>
-            <button on:click={openGithubUrl}>🔗 {$t('settings.github_open')}</button>
+            <button on:click={openGithubUrl}>➡️ {$t('settings.github_open')}</button>
           </div>
         </div>
 
