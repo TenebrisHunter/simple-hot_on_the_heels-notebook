@@ -1,8 +1,8 @@
 <!--
   ============================================================
   SettingsModal.svelte — окно настроек
-  втор: люченко .. (мск, мТ, а-261)
-  ерсия: stable&work_2_[v61]
+  Автор: Ключенко М.А. (Омск, ОмГТУ, ИБа-261)
+  Версия: stable&work_2_[v61]
   ============================================================
 -->
 <script lang="ts">
@@ -21,7 +21,7 @@
 
   let tab: 'about' | 'appearance' | 'language' | 'data' | 'reminders' = 'about';
 
-  // --- апка данных ---
+  // --- Папка данных ---
   let dataDir = '';
   let defaultDir = '';
   let changing = false;
@@ -35,7 +35,7 @@
   const githubUrl = 'https://github.com/TenebrisHunter/simple-hot_on_the_heels-notebook';
   let githubCopied = false;
 
-  // --- апоминания ---
+  // --- Напоминания ---
   let reminders: Reminder[] = [];
 
   onMount(async () => {
@@ -45,7 +45,7 @@
       trayEnabled = await getTrayEnabled();
       reminders = await getReminders();
     } catch (e) {
-      console.error('шибка загрузки настроек:', e);
+      console.error('Ошибка загрузки настроек:', e);
     }
   });
 
@@ -54,7 +54,6 @@
     currentLocale.set(l);
   }
 
-  // --- апка данных ---
   async function pickFolder() {
     const { open } = await import('@tauri-apps/plugin-dialog');
     const selected = await open({ directory: true, multiple: false });
@@ -65,7 +64,7 @@
         dataDir = selected;
         needsRestart = true;
       } catch (e) {
-        alert('шибка: ' + e);
+        alert('Ошибка: ' + e);
       } finally {
         changing = false;
       }
@@ -79,7 +78,7 @@
       dataDir = defaultDir;
       needsRestart = true;
     } catch (e) {
-      alert('шибка: ' + e);
+      alert('Ошибка: ' + e);
     } finally {
       changing = false;
     }
@@ -89,7 +88,6 @@
     try { await openFolder(dataDir); } catch (e) { console.error(e); }
   }
 
-  // --- GitHub ---
   async function copyGithubUrl() {
     try {
       await navigator.clipboard.writeText(githubUrl);
@@ -102,14 +100,12 @@
     try { await openUrl(githubUrl); } catch (e) { console.error(e); }
   }
 
-  // --- Трей ---
   async function toggleTray() {
     trayEnabled = !trayEnabled;
     await setTrayEnabled(trayEnabled);
     trayChanged = true;
   }
 
-  // --- апоминания ---
   function newId(): string {
     return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
   }
@@ -169,8 +165,8 @@
         <p>{$t('app.title')}</p>
         <p><strong>{$t('settings.version')}:</strong> stable&work_2_[v61]</p>
         <p><strong>{$t('settings.date')}:</strong> 14.10.2026</p>
-        <p><strong>{$t('settings.author')}:</strong> люченко ..</p>
-        <p><strong>{$t('settings.organization')}:</strong> мск, мТ, а-261,    «ахаон»</p>
+        <p><strong>{$t('settings.author')}:</strong> Ключенко М.А.</p>
+        <p><strong>{$t('settings.organization')}:</strong> Омск, ОмГТУ, ИБа-261, АНО ЦО ДО «Махаон»</p>
         <p><strong>{$t('settings.license')}:</strong> MIT</p>
 
         <h3>🔗 {$t('settings.github_title')}</h3>
